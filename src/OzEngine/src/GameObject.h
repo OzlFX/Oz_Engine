@@ -1,17 +1,8 @@
-#ifndef _GAMEOBJECT_H_
-#define _GAMEOBJECT_H_
-
 //Includes
 #include "Components.h"
 
 #include <memory>
 #include <list>
-
-#define ADDCOMPONENT \
-	std::shared_ptr<T> rtn = std::make_shared<T>(); \
-	rtn->gameObject = m_Self; \
-	rtn->began = false; \
-	components.push_back(rtn);
 
 namespace Oz
 {
@@ -53,32 +44,17 @@ namespace Oz
 			throw std::exception();
 		}
 
-		//Add Component functions
-		template <typename T>
-		std::shared_ptr<T> addComponent()
+		//Add Component function
+		template <typename T, typename... A>
+		std::shared_ptr<T> addComponent(A... a)
 		{
-			ADDCOMPONENT
-			rtn->onInit();
+			std::shared_ptr<T> component = std::make_shared<T>();
+			component->gameObject = m_Self;
+			component->began = false;
+			components.push_back(component);
+			component->onInit(a);
 
-			return rtn;
-		}
-
-		template <typename T, typename A>
-		std::shared_ptr<T> addComponent(A a)
-		{
-			ADDCOMPONENT
-				rtn->onInit(a);
-
-			return rtn;
-		}
-
-		template <typename T, typename A, typename B>
-		std::shared_ptr<T> addComponent(A a, B b)
-		{
-			ADDCOMPONENT
-				rtn->onInit(a, b);
-
-			return rtn;
+			return component;
 		}
 
 		//Get Core
@@ -87,5 +63,3 @@ namespace Oz
 		~cGameObject();
 	};
 }
-
-#endif

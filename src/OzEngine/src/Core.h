@@ -1,6 +1,3 @@
-#ifndef _CORE_H_
-#define _CORE_H_
-
 //Includes
 #include <iostream>
 #include <memory>
@@ -24,12 +21,12 @@ namespace Oz
 		std::list<std::shared_ptr<cGameObject>> m_GameObjects; //List of game objects
 
 		//Functions
-		bool Init(); //Initization function
-		std::shared_ptr<cCore> Initialize();
-		SDL_Window* createWindow(); //Create Window
+
 
 	public:
 		cCore(); //Constructor
+
+		static std::shared_ptr<cCore> Initialize(const char* _windowTitle, int _posX, int _posY, int _winW, int _winH, Uint32 _winFlags);
 
 		void Run(); //Main run function for the game engine
 		void Close(); //Main close function for the game engine
@@ -39,4 +36,3 @@ namespace Oz
 		~cCore(); //Destructor
 	};
 }
-#endif // !_CORE_H_
