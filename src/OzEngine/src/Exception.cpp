@@ -1,7 +1,6 @@
 #include "Exception.h"
 
 #include <GL/glew.h>
-
 #include <iostream>
 
 namespace Oz

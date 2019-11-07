@@ -5,7 +5,18 @@ project(OzEngine)
 set (Oz_Engine_VERSION_MAJOR 1)
 set (Oz_Engine_VERSION_MINOR 0)
 
-include_directories(src)
+include_directories(src
+		    contrib
+)
+
+include_directories(
+    contrib/glm
+)
+
+link_directories(
+	${CMAKE_SOURCE_DIR}/contrib/msvc-windows-x86/glew/lib
+	${CMAKE_SOURCE_DIR}/contrib/msvc-windows-x86/SDL2/lib
+)
 
 #Add the libraries to the project
 add_library(OzEngine
@@ -18,6 +29,8 @@ add_library(OzEngine
 	src/OzEngine/src/Components.cpp
 	src/OzEngine/src/Exception.h
 	src/OzEngine/src/Exception.cpp
+	src/OzEngine/src/Transform.h
+	src/OzEngine/src/Transform.cpp
 	src/OzEngine/src/RenderSystem/VertexBuffer.h
 	src/OzEngine/src/RenderSystem/VertexBuffer.cpp
 	src/OzEngine/src/RenderSystem/VertexArray.h
@@ -26,16 +39,7 @@ add_library(OzEngine
 	src/OzEngine/src/RenderSystem/ShaderProgram.cpp
 )
 
-link_directories(
-	${CMAKE_SOURCE_DIR}/contrib/msvc-windows-x86/glew/lib
-	${CMAKE_SOURCE_DIR}/contrib/msvc-windows-x86/SDL2/lib
-)
-
-target_include_directories(OzEngine PUBLIC
-	${CMAKE_SOURCE_DIR}/contrib/msvc-windows-x86/glew/include
-	${CMAKE_SOURCE_DIR}/contrib/msvc-windows-x86/SDL2/include
-	${CMAKE_SOURCE_DIR}/contrib/glm
-)
+target_link_libraries(OzEngine SDL2 opengl32 glew32)
 
 #Add main executable
 add_executable(Game

@@ -17,27 +17,6 @@ namespace Oz
 		core->m_Running = false;
 		core->m_Self = core;
 
-		core->m_Window = SDL_CreateWindow(_windowTitle, _posX, _posY, _winW, _winH, _winFlags); //Create the window for opengl
-
-		//Checks to see if the window has been created and initialised
-		if (core->m_Window == NULL)
-		{
-			//if the window doesnt exist, an error is returned to the console and closes the game
-#if _DEBUG
-			std::cout << "ERROR: " << SDL_GetError() << std::endl << "unable to create Window!" << std::endl;
-#endif
-			throw std::exception();
-		}
-
-		//Check to see if the window was created
-		if (core->m_Window == NULL)
-		{
-#if _DEBUG
-			std::cout << "Closing program due to issue with the window, can't see through it!" << std::endl;
-#endif
-			throw std::exception();
-		}
-
 		//Initialise SDL Video
 		if (SDL_Init(SDL_INIT_VIDEO) < 0)
 		{
@@ -58,12 +37,26 @@ namespace Oz
 			throw std::exception();
 		}
 
+		core->m_Window = SDL_CreateWindow(_windowTitle, _posX, _posY, _winW, _winH, _winFlags); //Create the window for opengl
+
+		//Checks to see if the window has been created and initialised
+		if (core->m_Window == NULL)
+		{
+			//if the window doesnt exist, an error is returned to the console and closes the game
+#if _DEBUG
+			std::cout << "ERROR: " << SDL_GetError() << std::endl << "unable to create Window!" << std::endl;
+#endif
+			throw std::exception();
+		}
+
 		return core;
 	}
 
 	//Main Run function
 	void cCore::Run()
 	{
+		m_Running = true;
+
 		while (m_Running)
 		{
 			SDL_Event m_Event = { 0 };
@@ -116,8 +109,6 @@ namespace Oz
 	//Destructor
 	cCore::~cCore()
 	{
-		//Clear gameobject list
-		//m_GameObjects.erase;
 		//Destroy the window
 		SDL_DestroyWindow(m_Window);
 		//Quit SDL

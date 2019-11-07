@@ -22,7 +22,7 @@ int main()
 	}
 	catch (...)
 	{
-		std::cout << "An unknown object was thrown" << std::endl;
+		std::cout << "An unknown object was thrown, duck!" << std::endl;
 	}
 
 	return 0;
