@@ -1,6 +1,8 @@
 #include "GameObject.h"
 #include "Components.h"
 
+#include <math.h>
+
 namespace Oz
 {
 	cGameObject::cGameObject()
@@ -36,6 +38,12 @@ namespace Oz
 		{
 			(*it)->onDisplay(); //Display all components
 		}
+	}
+
+	//Get the transform
+	std::shared_ptr<cTransform> cGameObject::getTransform()
+	{
+		return m_Self.lock()->getComponent<cTransform>();
 	}
 
 	cGameObject::~cGameObject()

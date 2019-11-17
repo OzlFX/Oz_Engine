@@ -4,11 +4,13 @@
 #include <list>
 #include <SDL2/SDL.h>
 
+#include "NonCopyable.h"
+
 namespace Oz
 {
 	class cGameObject;
 
-	class cCore
+	class cCore : private cNonCopyable
 	{
 	private:
 

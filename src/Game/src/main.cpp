@@ -8,6 +8,9 @@ int main()
 	///Add components to the gameobjects here:
 	/// std::shared_ptr object = gameObject->addComponent componentname;
 	
+	std::shared_ptr<Oz::cTransform> tr = gameObject->addComponent<Oz::cTransform>();
+	//gameObject->getComponent<Oz::cTransform>()->lookAt(glm::vec3 (2.0f, 0.0f, 1.0f));
+
 	try
 	{
 		Program->Run(); //Start and run the program

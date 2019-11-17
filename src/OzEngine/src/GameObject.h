@@ -8,6 +8,7 @@ namespace Oz
 {
 	class cCore;
 	class cComponent;
+	class cTransform;
 
 	class cGameObject
 	{
@@ -18,6 +19,7 @@ namespace Oz
 		//Vars
 		std::weak_ptr<cGameObject> m_Self;
 		std::weak_ptr<cCore> m_Core;
+		std::weak_ptr<cTransform> m_Transform;
 
 		std::list<std::shared_ptr<cComponent>> m_Components;
 
@@ -41,9 +43,11 @@ namespace Oz
 				{
 					return component; //Return that type
 				}
+				else
+				{
+					throw Oz::Exception("Component does not exist!"); //Throw engine exception if the component cannot be found
+				}
 			}
-
-			throw Oz::Exception("Component does not exist!"); //Throw engine exception if the component cannot be found
 		}
 
 		//Add Component to the game object
@@ -52,19 +56,21 @@ namespace Oz
 		{
 			std::shared_ptr<T> component = std::make_shared<T>();
 
-			if (component = std::static_pointer_cast<cComponent>()) //Check to see if the component is actually a component
+			if (component) //Check to see if the component is actually a component
 			{
 				//Add component to the list if the component is of type component
 				component->gameObject = m_Self;
 				component->began = false;
 				components.push_back(component);
-				component->onInit(a);
-
+				component->onInit(args...);
+				
 				return component;
 			}
 
-			throw Oz::Exception("Component added isnt actually a component!"); //Thow engine exception if the added component isnt of the type component
+			throw Oz::Exception("Added component isnt of type Component!"); //Thow engine exception if the added component isnt of the type component
 		}
+
+		std::shared_ptr<cTransform> getTransform(); //Get the object transform
 
 		//Get Core
 		std::shared_ptr<cCore> getCore();

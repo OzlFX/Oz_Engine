@@ -1,7 +1,13 @@
 #include "Transform.h"
+#include "GameObject.h"
 
 namespace Oz
 {
+	cTransform::cTransform()
+	{
+
+	}
+
 	//Initialize transforms
 	void cTransform::onInit(glm::vec3 _pos, glm::vec3 _scale, glm::vec3 _rotation)
 	{
@@ -19,26 +25,31 @@ namespace Oz
 	}
 
 	//Look at object
-	template <typename T>
-	void cTransform::lookAt(std::weak_ptr<T> _object)
+	void cTransform::lookAt(std::weak_ptr<cGameObject> _object)
 	{
-		if (_object != std::static_pointer_cast<cGameObject>)
+		glm::vec3 dirToObject;
+
+		glm::vec3 startPos = getGameObject()->getComponent<cTransform>()->getPos();
+		glm::vec3 destPos = _object.lock()->getComponent<cTransform>()->getPos();
+
+		dirToObject.x = startPos.x - destPos.x;
+		dirToObject.y = startPos.y - destPos.y;
+		dirToObject.z = startPos.z - destPos.z;
+
+		glm::vec3 rotObject;
+
+		if (startPos.y == destPos.y)
 		{
-			throw Oz::Exception("GameObject not found!");
+			//rotObject = sin(startPos, destPos);
 		}
 
-
+		//Set the rotation of the object towards the destination
+		getGameObject()->getComponent<cTransform>()->getRotation() = rotObject;
 	}
 
 	//Look at object with a certain rotation
-	template <typename T>
-	void cTransform::lookAt(std::weak_ptr<T> _object, glm::vec3 _rotation)
+	void cTransform::lookAt(std::weak_ptr<cGameObject> _object, glm::vec3 _rotation)
 	{
-		if (_object != std::static_pointer_cast<cGameObject>)
-		{
-			throw Oz::Exception("GameObject not found!");
-		}
-
 		
 	}
 
@@ -111,6 +122,12 @@ namespace Oz
 	glm::vec3 cTransform::getRotation()
 	{
 		return m_Rotation;
+	}
+
+	//Get the model matrix
+	glm::mat4 cTransform::getModel()
+	{
+
 	}
 
 	cTransform::~cTransform()

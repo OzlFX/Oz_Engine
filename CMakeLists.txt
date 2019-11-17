@@ -5,12 +5,11 @@ project(OzEngine)
 set (Oz_Engine_VERSION_MAJOR 1)
 set (Oz_Engine_VERSION_MINOR 0)
 
-include_directories(src
-		    contrib
-)
-
 include_directories(
-    contrib/glm
+	src
+	contrib/glm
+	contrib/msvc-windows-x86/glew/include
+	contrib/msvc-windows-x86/SDL2/include
 )
 
 link_directories(
@@ -20,6 +19,7 @@ link_directories(
 
 #Add the libraries to the project
 add_library(OzEngine
+	src/OzEngine/src/NonCopyable.h
 	src/OzEngine/src/OzEngine.h
 	src/OzEngine/src/Core.h
 	src/OzEngine/src/Core.cpp
@@ -31,6 +31,25 @@ add_library(OzEngine
 	src/OzEngine/src/Exception.cpp
 	src/OzEngine/src/Transform.h
 	src/OzEngine/src/Transform.cpp
+	src/OzEngine/src/Camera.h
+	src/OzEngine/src/Camera.cpp
+	src/OzEngine/src/Light.h
+	src/OzEngine/src/Light.cpp
+	src/OzEngine/src/Mesh.h
+	src/OzEngine/src/Mesh.cpp
+	src/OzEngine/src/Texture.h
+	src/OzEngine/src/Texture.cpp
+	src/OzEngine/src/Face.h
+	src/OzEngine/src/MeshRend.h
+	src/OzEngine/src/MeshRend.cpp
+	src/OzEngine/src/Resource.h
+	src/OzEngine/src/Resources.h
+	src/OzEngine/src/Resources.cpp
+	src/OzEngine/src/MaterialAttribute.h
+	src/OzEngine/src/Material.h
+	src/OzEngine/src/Material.cpp
+	src/OzEngine/src/Context.h
+	src/OzEngine/src/Context.cpp
 	src/OzEngine/src/RenderSystem/VertexBuffer.h
 	src/OzEngine/src/RenderSystem/VertexBuffer.cpp
 	src/OzEngine/src/RenderSystem/VertexArray.h

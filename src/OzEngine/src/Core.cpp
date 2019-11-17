@@ -1,5 +1,4 @@
-#include "Core.h"
-#include "GameObject.h"
+#include "OzEngine.h"
 
 #include <GL/glew.h>
 

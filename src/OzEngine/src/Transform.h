@@ -9,7 +9,9 @@
 
 namespace Oz
 {
-	class cTransform : public Oz::cComponent
+	class cGameObject;
+
+	class cTransform : public cComponent
 	{
 	private:
 
@@ -18,6 +20,8 @@ namespace Oz
 		glm::vec3 m_Rotation;
 
 	public:
+
+		cTransform();
 
 		//Setters
 		void setPos(glm::vec3 _pos);
@@ -28,12 +32,11 @@ namespace Oz
 		void onUpdate(glm::vec3 _pos, glm::vec3 _scale, glm::vec3 _rotation);
 
 		//Look at object
-		template <typename T>
-		void lookAt(std::weak_ptr<T> _object);
+		void lookAt(std::weak_ptr<cGameObject> _object);
 
 		//Look at object with a certain rotation
-		template <typename T>
-		void lookAt(std::weak_ptr<T> _object, glm::vec3 _rotation);
+
+		void lookAt(std::weak_ptr<cGameObject> _object, glm::vec3 _rotation);
 
 		void lookAt(glm::vec3 _worldPos); //Look at position in the world
 		void lookAt(glm::vec3 _worldPos, glm::vec3 _rotation); //Look at position in the world with specific rotation
@@ -47,6 +50,8 @@ namespace Oz
 		glm::vec3 getPos();
 		glm::vec3 getScale();
 		glm::vec3 getRotation();
+
+		glm::mat4 getModel();
 
 		~cTransform();
 	};
