@@ -8,7 +8,7 @@ namespace Oz
 {
 	cMeshRenderer::cMeshRenderer()
 	{
-		m_Shader = m_Material->getShader();
+		m_Material->getShader();
 	}
 
 	void cMeshRenderer::onInit()
@@ -17,7 +17,7 @@ namespace Oz
 
 	void cMeshRenderer::onDisplay()
 	{
-		m_Shader->Draw(m_Mesh.lock());
+		m_Material->getShader()->Draw(m_Mesh.lock());
 	}
 
 	void cMeshRenderer::setMesh(std::weak_ptr<cMesh> _mesh)

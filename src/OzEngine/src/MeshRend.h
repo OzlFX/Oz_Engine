@@ -1,3 +1,6 @@
+#ifndef _CMESHRENDERER_H_
+#define _CMESHRENDERER_H_
+
 #include "Components.h"
 
 namespace Oz
@@ -14,7 +17,6 @@ namespace Oz
 		std::weak_ptr<cMesh> m_Mesh;
 		std::shared_ptr<cMaterial> m_Material;
 		std::shared_ptr<cTexture> m_Texture;
-		std::shared_ptr<cShaderProgram> m_Shader;
 
 		void onDisplay();
 
@@ -33,3 +35,5 @@ namespace Oz
 		~cMeshRenderer();
 	};
 }
+
+#endif

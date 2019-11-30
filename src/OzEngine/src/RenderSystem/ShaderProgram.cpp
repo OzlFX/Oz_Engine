@@ -87,6 +87,11 @@ namespace Oz
 		glAttachShader(m_ID, vertexShaderId); //Attach the vertex shader to the shader program
 		glAttachShader(m_ID, fragmentShaderId); //Attach the fragment shader to the shader program
 
+		glBindAttribLocation(m_ID, 0, "in_Position");
+		glBindAttribLocation(m_ID, 1, "in_Color");
+		glBindAttribLocation(m_ID, 2, "in_TexCoord");
+		glBindAttribLocation(m_ID, 3, "in_lightColor");
+
 		glLinkProgram(m_ID);
 		glGetProgramiv(m_ID, GL_LINK_STATUS, &success);
 
