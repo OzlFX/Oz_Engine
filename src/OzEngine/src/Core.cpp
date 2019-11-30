@@ -1,7 +1,5 @@
 #include "OzEngine.h"
 
-#include <GL/glew.h>
-
 namespace Oz
 {
 	//Constructor
@@ -26,16 +24,6 @@ namespace Oz
 			throw std::exception();
 		}
 
-		//Initialise SDL Video
-		if (glewInit() != GLEW_OK)
-		{
-			//if glew fails to initialises, an error is returned to the console and throws an exception
-#if _DEBUG
-			std::cout << "ERROR: unable to initialize glew!" << std::endl;
-#endif
-			throw std::exception();
-		}
-
 		core->m_Window = SDL_CreateWindow(_windowTitle, _posX, _posY, _winW, _winH, _winFlags); //Create the window for opengl
 
 		//Checks to see if the window has been created and initialised
@@ -47,6 +35,19 @@ namespace Oz
 #endif
 			throw std::exception();
 		}
+
+		SDL_GLContext glContext = SDL_GL_CreateContext(core->m_Window);
+
+		if (!glContext)
+		{
+			throw Exception("Failed to create OpenGL context");
+		}
+
+		//Init Context
+		core->m_Context = cContext::Init();
+
+		//std::shared_ptr<cShaderProgram> shader = context->createShader("TestVert.vert", "TestFrag.frag");
+		//std::shared_ptr<cMesh> mesh = context->createMesh();
 
 		return core;
 	}

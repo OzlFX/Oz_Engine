@@ -1,5 +1,6 @@
 #include "GameObject.h"
 #include "Components.h"
+#include "Transform.h"
 
 #include <math.h>
 

@@ -3,21 +3,25 @@
 
 namespace Oz
 {
+	class cShaderProgram;
+	class cVertexBuffer;
+	class cMesh;
+	class cTexture;
+	//class cRenderTexture;
+
 	class cContext
 	{
-		class cShaderProgram;
-		class cVertexBuffer;
-
 	private:
 
-		std::shared_ptr<cShaderProgram> m_Shader;
-		std::shared_ptr<cVertexBuffer> m_VertexBuffer;
+		//Vars
+		std::weak_ptr<cContext> m_Self;
 
 	public:
 
-		void Init(); //Initialise
-		void createShader(std::string _vert, std::string _frag); //Create a shader
-		void createBuffer(); //Create buffer
+		static std::shared_ptr<cContext> Init(); //Initialise
+		std::shared_ptr<cShaderProgram> createShader(std::string _path); //Create a shader
+		std::shared_ptr<cVertexBuffer> createBuffer(); //Create buffer
+		std::shared_ptr<cMesh> createMesh(); //Create Mesh
 
 	};
 }

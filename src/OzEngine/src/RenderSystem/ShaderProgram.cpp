@@ -1,5 +1,7 @@
 #include "ShaderProgram.h"
 #include "VertexArray.h"
+#include "OzEngine/src/Context.h"
+#include "OzEngine/src/Mesh.h"
 #include "OzEngine/src/Exception.h"
 
 #include <glm/ext.hpp>
@@ -9,16 +11,23 @@
 
 namespace Oz
 {
-	cShaderProgram::cShaderProgram(std::string _vert, std::string _frag)
+	cShaderProgram::cShaderProgram(std::string _path)
 	{
-		std::ifstream file(_vert.c_str());
-		std::string vert;
+		std::ifstream file(_path.c_str());
 
 		//Check to see if the file is open
 		if (!file.is_open())
 		{
 			throw Oz::Exception("Cannot find file");
 		}
+
+		std::string vert = "";
+		vert += "#version 120\n";
+		vert += "#define VERTEX\n";
+
+		std::string frag = "";
+		frag += "#version 120\n";
+		frag += "#define FRAGMENT\n";
 
 		//Copy contents of the file into the string
 		while (!file.eof())
@@ -26,24 +35,6 @@ namespace Oz
 			std::string line;
 			std::getline(file, line);
 			vert += line + "\n";
-		}
-
-		file.close(); //Close current file
-		file.open(_frag.c_str()); //Open new file
-
-		std::string frag;
-
-		//Check to see if the file is open
-		if (!file.is_open())
-		{
-			throw Oz::Exception("Cannot find file");
-		}
-
-		//Copy contents of the file into the string
-		while (!file.eof())
-		{
-			std::string line;
-			std::getline(file, line);
 			frag += line + "\n";
 		}
 
@@ -58,7 +49,16 @@ namespace Oz
 		//Check if compile was successful
 		if (!success)
 		{
-			throw Oz::Exception("Shader not compiled correctly");
+			int length = 0;
+			glGetShaderiv(vertexShaderId, GL_INFO_LOG_LENGTH, &length);
+
+			std::vector<char> infoLog(length);
+			glGetShaderInfoLog(vertexShaderId, length, NULL, &infoLog.at(0));
+
+			glDeleteShader(vertexShaderId);
+
+			std::string msg = &infoLog.at(0);
+			throw Oz::Exception(msg);
 		}
 
 		const GLchar *fs = frag.c_str(); //Convert fragment string into GLchar for the GPU to use
@@ -71,16 +71,28 @@ namespace Oz
 		//Check if compile was successful
 		if (!success)
 		{
-			throw Oz::Exception("Shader not compiled correctly");
+			int length = 0;
+			glGetShaderiv(fragmentShaderId, GL_INFO_LOG_LENGTH, &length);
+
+			std::vector<char> infoLog(length);
+			glGetShaderInfoLog(fragmentShaderId, length, NULL, &infoLog.at(0));
+
+			glDeleteShader(fragmentShaderId);
+
+			std::string msg = &infoLog.at(0);
+			throw Oz::Exception(msg);
 		}
 
 		m_ID = glCreateProgram(); //Create the shader program
 		glAttachShader(m_ID, vertexShaderId); //Attach the vertex shader to the shader program
 		glAttachShader(m_ID, fragmentShaderId); //Attach the fragment shader to the shader program
 
+		glLinkProgram(m_ID);
+		glGetProgramiv(m_ID, GL_LINK_STATUS, &success);
+
 		//Bind the shaders
-		glBindAttribLocation(m_ID, 0, "in_Position");
-		glBindAttribLocation(m_ID, 1, "in_Color");
+		//glBindAttribLocation(m_ID, 0, "in_Position");
+		//glBindAttribLocation(m_ID, 1, "in_Color");
 
 		//Checks for errors
 		if (glGetError() != GL_NO_ERROR)
@@ -94,8 +106,8 @@ namespace Oz
 		glDeleteShader(fragmentShaderId); //Delete the fragment shader
 	}
 
-	//Draw
-	void cShaderProgram::Draw(std::weak_ptr<VertexArray> _vertArray)
+	//Draw vertex array
+	void cShaderProgram::Draw(std::weak_ptr<cVertexArray> _vertArray)
 	{
 		glUseProgram(m_ID); //Use the current shader program
 		glBindVertexArray(_vertArray.lock()->getID());
@@ -106,9 +118,29 @@ namespace Oz
 		glUseProgram(0);
 	}
 
+	//Draw Mesh
+	void cShaderProgram::Draw(std::shared_ptr<cMesh> _mesh)
+	{
+		glEnable(GL_DEPTH_TEST);
+		glEnable(GL_CULL_FACE);
+		glEnable(GL_BLEND);
+
+		glUseProgram(m_ID); //Use the current shader program
+		glBindVertexArray(_mesh->getID());
+
+		glDrawArrays(GL_TRIANGLES, 0, _mesh->m_Model->getVertexCount());
+
+		glBindVertexArray(0);
+		glUseProgram(0);
+
+		glDisable(GL_BLEND);
+		glDisable(GL_CULL_FACE);
+		glDisable(GL_DEPTH_TEST);
+	}
+
 	/*Set Uniform overloads */
 
-	void cShaderProgram::setUniform(std::string _uniform, glm::vec4 _value)
+	void cShaderProgram::setUniform(const std::string _uniform, glm::vec4 _value)
 	{
 		GLint uniformId = glGetUniformLocation(m_ID, _uniform.c_str());
 
@@ -122,7 +154,7 @@ namespace Oz
 		glUseProgram(0);
 	}
 
-	void cShaderProgram::setUniform(std::string _uniform, float _value)
+	void cShaderProgram::setUniform(const std::string _uniform, float _value)
 	{
 		GLint uniformId = glGetUniformLocation(m_ID, _uniform.c_str());
 
@@ -136,7 +168,7 @@ namespace Oz
 		glUseProgram(0);
 	}
 
-	void cShaderProgram::setUniform(std::string _uniform, glm::mat4 _value)
+	void cShaderProgram::setUniform(const std::string _uniform, glm::mat4 _value)
 	{
 		GLint uniformId = glGetUniformLocation(m_ID, _uniform.c_str());
 
@@ -157,6 +189,6 @@ namespace Oz
 
 	cShaderProgram::~cShaderProgram()
 	{
-
+		glDeleteProgram(m_ID);
 	}
 }

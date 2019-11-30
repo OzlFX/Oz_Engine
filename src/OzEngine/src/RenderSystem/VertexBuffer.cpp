@@ -1,8 +1,9 @@
 #include "VertexBuffer.h"
+#include "OzEngine/src/Context.h"
 
 namespace Oz
 {
-	VertexBuffer::VertexBuffer() : m_Components(0), m_Dirty(false)
+	cVertexBuffer::cVertexBuffer() : m_Components(0), m_Dirty(false)
 	{
 		glGenBuffers(1, &m_ID);
 
@@ -12,7 +13,25 @@ namespace Oz
 		}
 	}
 
-	void VertexBuffer::Add(glm::vec3 _value)
+	void cVertexBuffer::Add(glm::vec2 _value)
+	{
+		if (!m_Components)
+		{
+			m_Components = 2;
+		}
+
+		if (m_Components != 2)
+		{
+			throw std::exception();
+		}
+
+		m_Data.push_back(_value.x);
+		m_Data.push_back(_value.y);
+
+		m_Dirty = true;
+	}
+
+	void cVertexBuffer::Add(glm::vec3 _value)
 	{
 		if (!m_Components)
 		{
@@ -31,7 +50,7 @@ namespace Oz
 		m_Dirty = true;
 	}
 
-	void VertexBuffer::Add(glm::vec4 _value)
+	void cVertexBuffer::Add(glm::vec4 _value)
 	{
 		if (!m_Components)
 		{
@@ -51,19 +70,19 @@ namespace Oz
 		m_Dirty = true;
 	}
 
-	int VertexBuffer::getDataSize()
+	int cVertexBuffer::getDataSize()
 	{
 		return m_Data.size();
 	}
 
-	int VertexBuffer::getComponents()
+	int cVertexBuffer::getComponents()
 	{
 		if (!m_Components) throw std::exception();
 
 		return m_Components;
 	}
 
-	GLuint VertexBuffer::getID()
+	GLuint cVertexBuffer::getID()
 	{
 		if (m_Dirty)
 		{
@@ -76,5 +95,12 @@ namespace Oz
 		}
 
 		return m_ID;
+	}
+
+	cVertexBuffer::~cVertexBuffer()
+	{
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		GLuint delID = m_ID;
+		glDeleteBuffers(1, &delID);
 	}
 }

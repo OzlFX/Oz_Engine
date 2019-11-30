@@ -21,13 +21,12 @@ namespace Oz
 
 	public:
 
-		cTransform();
-
 		//Setters
 		void setPos(glm::vec3 _pos);
 		void setScale(glm::vec3 _scale);
 		void setRotation(glm::vec3 _rotation);
 
+		void onInit();
 		void onInit(glm::vec3 _pos, glm::vec3 _scale, glm::vec3 _rotation);
 		void onUpdate(glm::vec3 _pos, glm::vec3 _scale, glm::vec3 _rotation);
 

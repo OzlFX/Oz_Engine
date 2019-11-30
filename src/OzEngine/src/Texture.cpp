@@ -2,7 +2,7 @@
 
 namespace Oz
 {
-	std::shared_ptr<cTexture> cTexture::Create(unsigned int _width, unsigned int _height)
+	/*std::shared_ptr<cTexture> cTexture::Create(unsigned int _width, unsigned int _height)
 	{
 
 	}
@@ -25,5 +25,5 @@ namespace Oz
 	cTexture::~cTexture()
 	{
 
-	}
+	}*/
 }

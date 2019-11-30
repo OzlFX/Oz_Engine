@@ -7,11 +7,11 @@
 namespace Oz
 {
 	class cCore;
-	class cComponent;
 	class cTransform;
 
 	class cGameObject
 	{
+		friend class cComponent;
 		friend class cCore;
 
 	private:
@@ -59,9 +59,9 @@ namespace Oz
 			if (component) //Check to see if the component is actually a component
 			{
 				//Add component to the list if the component is of type component
-				component->gameObject = m_Self;
-				component->began = false;
-				components.push_back(component);
+				component->m_GameObject = m_Self;
+				component->m_Began = false;
+				m_Components.push_back(component);
 				component->onInit(args...);
 				
 				return component;

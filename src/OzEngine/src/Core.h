@@ -1,3 +1,6 @@
+#ifndef _CCORE_H_
+#define _CCORE_H_
+
 //Includes
 #include <iostream>
 #include <memory>
@@ -9,6 +12,9 @@
 namespace Oz
 {
 	class cGameObject;
+	class cResources;
+	class cMaterial;
+	class cContext;
 
 	class cCore : private cNonCopyable
 	{
@@ -20,10 +26,13 @@ namespace Oz
 
 		std::weak_ptr<cCore> m_Self;
 
+		std::shared_ptr<cContext> m_Context;
+		std::shared_ptr<cResources> m_Resources; //Resources
+
 		std::list<std::shared_ptr<cGameObject>> m_GameObjects; //List of game objects
 
 		//Functions
-
+		void Close(); //Main close function for the game engine
 
 	public:
 		cCore(); //Constructor
@@ -31,10 +40,16 @@ namespace Oz
 		static std::shared_ptr<cCore> Initialize(const char* _windowTitle, int _posX, int _posY, int _winW, int _winH, Uint32 _winFlags);
 
 		void Run(); //Main run function for the game engine
-		void Close(); //Main close function for the game engine
 
 		std::shared_ptr<cGameObject> addGameObject();
+		
+		std::shared_ptr<cResources> getResource()
+		{
+			return m_Resources;
+		}
 
 		~cCore(); //Destructor
 	};
 }
+
+#endif

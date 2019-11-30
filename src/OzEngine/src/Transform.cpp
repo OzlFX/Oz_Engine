@@ -1,11 +1,14 @@
 #include "Transform.h"
 #include "GameObject.h"
+#include <glm/gtc/matrix_transform.hpp>
 
 namespace Oz
 {
-	cTransform::cTransform()
+	void cTransform::onInit()
 	{
-
+		m_Pos = glm::vec3(0.0f, 0.0f, 0.0f);
+		m_Scale = glm::vec3(1.0f, 1.0f, 1.0f);
+		m_Rotation = glm::vec3(0.0f, 0.0f, 0.0f);
 	}
 
 	//Initialize transforms
@@ -127,7 +130,16 @@ namespace Oz
 	//Get the model matrix
 	glm::mat4 cTransform::getModel()
 	{
+		glm::mat4 modelMat(1.0f);
+		modelMat = glm::translate(modelMat, m_Pos);
 
+		modelMat = glm::rotate(modelMat, m_Rotation.y, glm::vec3(0, 1, 0));
+		modelMat = glm::rotate(modelMat, m_Rotation.x, glm::vec3(1, 0, 0));
+		modelMat = glm::rotate(modelMat, m_Rotation.z, glm::vec3(0, 0, 1));
+
+		modelMat = glm::scale(modelMat, m_Scale);
+
+		return modelMat;
 	}
 
 	cTransform::~cTransform()

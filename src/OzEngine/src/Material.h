@@ -2,19 +2,25 @@
 #include <vector>
 #include <string>
 
+#include "Resource.h"
+
 namespace Oz
 {
-	class cMaterial
-	{
-		class cShaderProgram;
-		class cMaterialAttribute;
+	class cShaderProgram;
+	//class cMaterialAttribute;
+	//class cTexture;
 
+	class cMaterial : private cNonCopyable, public cResource
+	{
 	private:
 
 		std::weak_ptr<cShaderProgram> m_Shader;
-		std::vector<cMaterialAttribute> m_Attrib;
+		std::weak_ptr<cMaterial> m_Self;
+		//std::vector<cMaterialAttribute> m_Attrib;
 
 	public:
+
+		std::shared_ptr<cMaterial> Load(const std::string& _path);
 
 		void setShader(std::weak_ptr<cShaderProgram> _shader); //Set the shader
 
@@ -22,5 +28,7 @@ namespace Oz
 		void setValue(std::string _name, float _value); //Set the value with a float
 
 		std::shared_ptr<cShaderProgram> getShader(); //Get the shader
+
+		~cMaterial();
 	};
 }
