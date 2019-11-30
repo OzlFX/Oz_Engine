@@ -1,3 +1,6 @@
+#ifndef _CMATERIALATTRIB_H_
+#define _CMATERIALATTRIB_H_
+
 #include <memory>
 #include <string>
 
@@ -18,3 +21,5 @@ namespace Oz
 
 	};
 }
+
+#endif

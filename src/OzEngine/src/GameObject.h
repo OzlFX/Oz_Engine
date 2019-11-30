@@ -1,3 +1,6 @@
+#ifndef _CGAMEOBJECT_H_
+#define _CGAMEOBJECT_H_
+
 //Includes
 #include "Exception.h"
 
@@ -78,3 +81,5 @@ namespace Oz
 		~cGameObject();
 	};
 }
+
+#endif

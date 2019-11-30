@@ -1,3 +1,6 @@
+#ifndef _CVERTEXARRAY_H_
+#define _CVERTEXARRAY_H_
+
 //#include "OzEngine/src/Face.h"
 
 #include <GL/glew.h>
@@ -41,3 +44,5 @@ namespace Oz
 		~cVertexArray();
 	};
 }
+
+#endif

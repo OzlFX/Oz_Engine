@@ -50,8 +50,8 @@ add_library(OzEngine
 	src/OzEngine/src/Context.cpp
 	src/OzEngine/src/Environment.h
 	src/OzEngine/src/Environment.cpp
-	src/OzEngine/src/Keyboard.h
-	src/OzEngine/src/Keyboard.cpp
+	src/OzEngine/src/Input.h
+	src/OzEngine/src/Input.cpp
 	src/OzEngine/src/RenderSystem/VertexBuffer.h
 	src/OzEngine/src/RenderSystem/VertexBuffer.cpp
 	src/OzEngine/src/RenderSystem/VertexArray.h

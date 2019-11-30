@@ -1,3 +1,6 @@
+#ifndef _CCONTEXT_H_
+#define _CCONTEXT_H_
+
 #include <memory>
 #include <string>
 
@@ -25,3 +28,5 @@ namespace Oz
 
 	};
 }
+
+#endif

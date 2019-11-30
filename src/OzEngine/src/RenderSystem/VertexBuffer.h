@@ -1,3 +1,6 @@
+#ifndef _CVERTEXBUFFER_H_
+#define _CVERTEXBUFFER_H_
+
 #include <GL/glew.h>
 #include <glm/glm.hpp>
 
@@ -37,3 +40,5 @@ namespace Oz
 		~cVertexBuffer();
 	};
 }
+
+#endif

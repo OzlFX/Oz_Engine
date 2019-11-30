@@ -1,3 +1,6 @@
+#ifndef _CMESH_H_
+#define _CMESH_H_
+
 #include <vector>
 #include <OzEngine/src/NonCopyable.h>
 
@@ -47,3 +50,5 @@ namespace Oz
 		~cMesh();
 	};
 }
+
+#endif

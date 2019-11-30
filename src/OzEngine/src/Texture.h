@@ -1,3 +1,6 @@
+#ifndef _CTEXTURE_H_
+#define _CTEXTURE_H_
+
 #include <OzEngine/src/NonCopyable.h>
 
 #include "Resource.h"
@@ -28,3 +31,5 @@ namespace Oz
 		//~cTexture();
 	};
 }
+
+#endif

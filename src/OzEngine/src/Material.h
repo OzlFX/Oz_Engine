@@ -1,3 +1,6 @@
+#ifndef _CMATERIAL_H_
+#define _CMATERIAL_H_
+
 #include <memory>
 #include <vector>
 #include <string>
@@ -32,3 +35,5 @@ namespace Oz
 		~cMaterial();
 	};
 }
+
+#endif

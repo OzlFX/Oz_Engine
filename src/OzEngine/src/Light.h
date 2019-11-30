@@ -1,3 +1,6 @@
+#ifndef _CLIGHT_H_
+#define _CLIGHT_H_
+
 namespace Oz
 {
 	class cLight
@@ -12,3 +15,5 @@ namespace Oz
 
 	};
 }
+
+#endif

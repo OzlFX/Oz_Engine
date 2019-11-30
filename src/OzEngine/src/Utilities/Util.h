@@ -1,3 +1,6 @@
+#ifndef _CUTIL_H_
+#define _CUTIL_H_
+
 #include <vector>
 #include <string>
 
@@ -10,3 +13,5 @@ namespace Oz
 		static void splitStringWhiteSpace(const std::string& _input, std::vector<std::string>& _output);
 	};
 }
+
+#endif
