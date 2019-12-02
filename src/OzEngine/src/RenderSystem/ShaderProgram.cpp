@@ -133,7 +133,7 @@ namespace Oz
 		glUseProgram(m_ID); //Use the current shader program
 		glBindVertexArray(_mesh->getID());
 
-		glDrawArrays(GL_TRIANGLES, 0, _mesh->m_Model->getVertexCount());
+		glDrawArrays(GL_TRIANGLES, _mesh->m_Faces.size(), _mesh->m_Model->getVertexCount());
 
 		glBindVertexArray(0);
 		glUseProgram(0);

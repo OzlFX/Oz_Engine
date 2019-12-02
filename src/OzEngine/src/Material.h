@@ -23,7 +23,7 @@ namespace Oz
 
 	public:
 
-		std::shared_ptr<cMaterial> Load(const std::string& _path);
+		std::shared_ptr<cMaterial> Load(std::string& _path);
 
 		void setShader(std::weak_ptr<cShaderProgram> _shader); //Set the shader
 

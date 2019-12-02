@@ -10,7 +10,7 @@ namespace Oz
 		m_Shader = _shader; //Set the shader :P
 	}
 
-	std::shared_ptr<cMaterial> cMaterial::Load(const std::string& _path)
+	std::shared_ptr<cMaterial> cMaterial::Load(std::string& _path)
 	{
 		std::shared_ptr<cMaterial> material = std::make_shared<cMaterial>();
 		material->m_Self = material;
@@ -22,12 +22,12 @@ namespace Oz
 
 	void cMaterial::setValue(std::string _name, std::weak_ptr<cTexture> _value)
 	{
-
+		//m_Shader.lock()->setUniform(_name, _value);
 	}
 
 	void cMaterial::setValue(std::string _name, float _value)
 	{
-
+		m_Shader.lock()->setUniform(_name, _value);
 	}
 
 	std::shared_ptr<cShaderProgram> cMaterial::getShader()
