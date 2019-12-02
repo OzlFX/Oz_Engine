@@ -46,8 +46,8 @@ namespace Oz
 		//Init Context
 		core->m_Context = cContext::Init();
 
-		//std::shared_ptr<cShaderProgram> shader = context->createShader("TestVert.vert", "TestFrag.frag");
-		//std::shared_ptr<cMesh> mesh = context->createMesh();
+		std::shared_ptr<cShaderProgram> shader = core->m_Context->createShader("../src/Resources/Shaders/TestShader.glsl");
+		std::shared_ptr<cMesh> mesh = core->m_Context->createMesh();
 
 		return core;
 	}

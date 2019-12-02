@@ -8,7 +8,7 @@ namespace Oz
 {
 	cMeshRenderer::cMeshRenderer()
 	{
-		m_Material->getShader();
+		//m_Material->getShader();
 	}
 
 	void cMeshRenderer::onInit()
