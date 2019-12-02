@@ -18,10 +18,14 @@ namespace Oz
 		std::shared_ptr<cMaterial> m_Material;
 		std::shared_ptr<cTexture> m_Texture;
 
+		std::string m_path;
+
 		void onDisplay();
 
 	public:
+
 		cMeshRenderer();
+		cMeshRenderer(std::string& _path);
 
 		void onInit();
 

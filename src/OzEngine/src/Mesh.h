@@ -40,12 +40,12 @@ namespace Oz
 
 		//Functions
 		std::shared_ptr<cVertexArray> Create();
-		std::shared_ptr<cMesh> Load(const std::string& _path);
+		std::shared_ptr<cMesh> Load(std::string& _path); //Load the mesh
 
 	public:
 
-		void addFace();
-		GLuint getID();
+		void addFace(); //Add a new face to the mesh
+		GLuint getID(); //Get the ID of the mesh based on the model's ID
 
 		~cMesh();
 	};

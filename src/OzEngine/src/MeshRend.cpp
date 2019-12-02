@@ -6,17 +6,15 @@
 
 namespace Oz
 {
-	cMeshRenderer::cMeshRenderer()
-	{
-		//m_Material->getShader();
-	}
-
 	void cMeshRenderer::onInit()
 	{
+		//m_Material->getShader()->Load();
 	}
 
 	void cMeshRenderer::onDisplay()
 	{
+		m_Material->getShader()->setUniform("in_Model", glm::mat4(1.0f));
+		m_Material->getShader()->setUniform("in_Projection", glm::mat4(1.0f));
 		m_Material->getShader()->Draw(m_Mesh.lock());
 	}
 

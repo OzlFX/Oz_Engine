@@ -26,8 +26,12 @@ namespace Oz
 
 		std::shared_ptr<cContext> m_Context;
 
+		std::string m_Path;
+
 	public:
-		cShaderProgram(std::string _path);
+		cShaderProgram();
+
+		void Load(std::string& _path);
 
 		void Draw(std::weak_ptr<cVertexArray> _vertArray); //Draw vertex array
 		void Draw(std::shared_ptr<cMesh> _mesh); //Draw Mesh

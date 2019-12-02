@@ -40,14 +40,11 @@ namespace Oz
 
 		if (!glContext)
 		{
-			throw Exception("Failed to create OpenGL context");
+			throw Oz::Exception("Failed to create OpenGL context");
 		}
 
 		//Init Context
 		core->m_Context = cContext::Init();
-
-		std::shared_ptr<cShaderProgram> shader = core->m_Context->createShader("../src/Resources/Shaders/TestShader.glsl");
-		std::shared_ptr<cMesh> mesh = core->m_Context->createMesh();
 
 		return core;
 	}
@@ -102,6 +99,13 @@ namespace Oz
 		m_GameObjects.push_back(m_GameObject); //Add new game object to the list
 		m_GameObject->m_Self = m_GameObject;
 		m_GameObject->m_Core = m_Self;
+
+		///Maybe???
+		if (m_GameObject->getComponent<cMeshRenderer>())
+		{
+			std::shared_ptr<cMesh> mesh = m_Context->createMesh();
+			std::shared_ptr<cShaderProgram> shader = m_Context->createShader();
+		}
 
 		return m_GameObject;
 	}

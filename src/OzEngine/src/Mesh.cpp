@@ -12,7 +12,7 @@ namespace Oz
 		return model;
 	}
 
-	std::shared_ptr<cMesh> cMesh::Load(const std::string& _path)
+	std::shared_ptr<cMesh> cMesh::Load(std::string& _path)
 	{
 		std::shared_ptr<cMesh> mesh = std::make_shared<cMesh>();
 		mesh->m_Self = mesh;
@@ -73,7 +73,6 @@ namespace Oz
 
 	GLuint cMesh::getID()
 	{
-		///Maybe???
 		GLuint ID = 0;
 
 		if (m_Dirty)

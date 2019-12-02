@@ -11,37 +11,19 @@
 
 namespace Oz
 {
-	cShaderProgram::cShaderProgram(std::string _path)
+	cShaderProgram::cShaderProgram()
 	{
-		std::ifstream file(_path.c_str());
-
-		//Check to see if the file is open
-		if (!file.is_open())
-		{
-			throw Oz::Exception("Cannot find file");
-		}
+		const GLchar *src = NULL;
 
 		std::string vert = "";
 		vert += "#version 120\n";
 		vert += "#define VERTEX\n";
-
-		std::string frag = "";
-		frag += "#version 120\n";
-		frag += "#define FRAGMENT\n";
-
-		//Copy contents of the file into the string
-		while (!file.eof())
-		{
-			std::string line;
-			std::getline(file, line);
-			vert += line + "\n";
-			frag += line + "\n";
-		}
-
-		const GLchar *vs = vert.c_str(); //Convert vertex string into GLchar for the GPU to use
+		vert += m_Path;
+		
+		src = vert.c_str(); //Convert vertex string into GLchar for the GPU to use
 
 		GLuint vertexShaderId = glCreateShader(GL_VERTEX_SHADER); //Create the vertex shader
-		glShaderSource(vertexShaderId, 1, &vs, NULL); //Set the shader source and get the vertex shader file contents
+		glShaderSource(vertexShaderId, 1, &src, NULL); //Set the shader source and get the vertex shader file contents
 		glCompileShader(vertexShaderId); //Compile the shader
 		GLint success = 0;
 		glGetShaderiv(vertexShaderId, GL_COMPILE_STATUS, &success);
@@ -61,10 +43,15 @@ namespace Oz
 			throw Oz::Exception(msg);
 		}
 
-		const GLchar *fs = frag.c_str(); //Convert fragment string into GLchar for the GPU to use
+		std::string frag = "";
+		frag += "#version 120\n";
+		frag += "#define FRAGMENT\n";
+		frag += src;
+
+		src = frag.c_str(); //Convert fragment string into GLchar for the GPU to use
 
 		GLuint fragmentShaderId = glCreateShader(GL_FRAGMENT_SHADER); //Create the fragment shader
-		glShaderSource(fragmentShaderId, 1, &fs, NULL); //Set the shader source and get the fragment shader file contents
+		glShaderSource(fragmentShaderId, 1, &src, NULL); //Set the shader source and get the fragment shader file contents
 		glCompileShader(fragmentShaderId); //Compile the shader
 		glGetShaderiv(fragmentShaderId, GL_COMPILE_STATUS, &success);
 
@@ -109,6 +96,26 @@ namespace Oz
 		glDeleteShader(vertexShaderId); //Delete the vertex shader
 		glDetachShader(m_ID, fragmentShaderId); //Detach the fragment shader
 		glDeleteShader(fragmentShaderId); //Delete the fragment shader
+	}
+
+	//Load the shader
+	void cShaderProgram::Load(std::string& _path)
+	{
+		std::ifstream file(_path.c_str());
+
+		//Check to see if the file is open
+		if (!file.is_open())
+		{
+			throw Oz::Exception("Cannot find file");
+		}
+
+		//Copy contents of the file into the string
+		while (!file.eof())
+		{
+			std::string line;
+			std::getline(file, line);
+			m_Path += line + "\n";
+		}
 	}
 
 	//Draw vertex array

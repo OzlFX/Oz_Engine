@@ -27,14 +27,14 @@ namespace Oz
 	public:
 
 		template <typename T>
-		std::shared_ptr<T> Load(std::string _path)
+		std::shared_ptr<T> Load(std::string& _path)
 		{
 			std::shared_ptr<T> resource = std::make_shared<T>(); //Make a new thingy
 
 			resource->Load(_path); //Load a resource
 
 			m_Resources.push_back(resource); //Add Resource
-
+			
 			return resource;
 		}
 

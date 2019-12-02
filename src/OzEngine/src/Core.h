@@ -45,6 +45,7 @@ namespace Oz
 		
 		std::shared_ptr<cResources> getResource()
 		{
+			//return m_Self.lock()->m_Resources;
 			return m_Resources;
 		}
 
