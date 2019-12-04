@@ -7,11 +7,6 @@
 
 namespace Oz
 {
-	cComponent::cComponent()
-	{
-
-	}
-
 	//Init
 	void cComponent::onInit()
 	{

@@ -2,6 +2,7 @@
 #include "Texture.h"
 //#include "RenderTexture.h"
 #include "Mesh.h"
+#include "Material.h"
 #include "RenderSystem/ShaderProgram.h"
 #include "RenderSystem/VertexBuffer.h"
 
@@ -30,9 +31,9 @@ namespace Oz
 	}
 
 	//Create the shader with the source files
-	std::shared_ptr<cShaderProgram> cContext::createShader(std::string _path)
+	std::shared_ptr<cShaderProgram> cContext::createShader()
 	{
-		std::shared_ptr<cShaderProgram> shader = std::make_shared<cShaderProgram>(_path);
+		std::shared_ptr<cShaderProgram> shader = std::make_shared<cShaderProgram>();
 		shader->m_Context = m_Self.lock();
 
 		return shader;
@@ -54,5 +55,13 @@ namespace Oz
 		mesh->m_Context = m_Self.lock();
 
 		return mesh;
+	}
+
+	std::shared_ptr<cMaterial> cContext::createMaterial()
+	{
+		std::shared_ptr<cMaterial> material = std::make_shared<cMaterial>();
+		material->m_Context = m_Self.lock();
+
+		return material;
 	}
 }

@@ -10,6 +10,7 @@ namespace Oz
 	class cVertexBuffer;
 	class cMesh;
 	class cTexture;
+	class cMaterial;
 	//class cRenderTexture;
 
 	class cContext
@@ -22,9 +23,10 @@ namespace Oz
 	public:
 
 		static std::shared_ptr<cContext> Init(); //Initialise
-		std::shared_ptr<cShaderProgram> createShader(std::string _path); //Create a shader
+		std::shared_ptr<cShaderProgram> createShader(); //Create a shader
 		std::shared_ptr<cVertexBuffer> createBuffer(); //Create buffer
 		std::shared_ptr<cMesh> createMesh(); //Create Mesh
+		std::shared_ptr<cMaterial> createMaterial(); //Create Material
 
 	};
 }

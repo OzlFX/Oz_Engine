@@ -9,20 +9,25 @@
 
 namespace Oz
 {
+	class cContext;
 	class cShaderProgram;
 	//class cMaterialAttribute;
 	//class cTexture;
 
 	class cMaterial : private cNonCopyable, public cResource
 	{
+		friend class cContext;
+
 	private:
 
+		std::shared_ptr<cContext> m_Context;
 		std::weak_ptr<cShaderProgram> m_Shader;
 		std::weak_ptr<cMaterial> m_Self;
 		//std::vector<cMaterialAttribute> m_Attrib;
 
 	public:
 
+		std::shared_ptr<cMaterial> Create();
 		std::shared_ptr<cMaterial> Load(std::string& _path);
 
 		void setShader(std::weak_ptr<cShaderProgram> _shader); //Set the shader

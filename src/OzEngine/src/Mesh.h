@@ -39,8 +39,8 @@ namespace Oz
 		std::weak_ptr<cMesh> m_Self;
 
 		//Functions
-		std::shared_ptr<cVertexArray> Create();
-		std::shared_ptr<cMesh> Load(std::string& _path); //Load the mesh
+		std::shared_ptr<cMesh> Create();
+		std::shared_ptr<cMesh> Load(std::string _path); //Load the mesh
 
 	public:
 

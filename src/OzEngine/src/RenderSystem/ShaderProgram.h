@@ -22,16 +22,19 @@ namespace Oz
 	private:
 
 		GLuint m_ID;
-		std::weak_ptr<cMesh> m_Mesh;
+		std::weak_ptr<cMesh> m_Mesh; //Reference to mesh to draw it
 
-		std::shared_ptr<cContext> m_Context;
+		std::weak_ptr<cShaderProgram> m_Self;
 
-		std::string m_Path;
+		std::shared_ptr<cContext> m_Context; //Allow context access to create a shader
+
+		std::string m_Path; //The path of the file to use in the program
 
 	public:
 		cShaderProgram();
 
-		void Load(std::string& _path);
+		std::shared_ptr<cShaderProgram> Create(); //Create a new shader program
+		void Load(std::string _path); //Load the shader file
 
 		void Draw(std::weak_ptr<cVertexArray> _vertArray); //Draw vertex array
 		void Draw(std::shared_ptr<cMesh> _mesh); //Draw Mesh

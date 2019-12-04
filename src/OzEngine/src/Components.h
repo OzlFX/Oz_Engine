@@ -27,7 +27,6 @@ namespace Oz
 		virtual void onDisplay();
 
 	public:
-		cComponent();
 
 		std::shared_ptr<cCore> getCore(); //Get the core
 		std::shared_ptr<cGameObject> getGameObject(); //Get game object

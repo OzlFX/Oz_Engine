@@ -98,8 +98,17 @@ namespace Oz
 		glDeleteShader(fragmentShaderId); //Delete the fragment shader
 	}
 
+	//Create the shader
+	std::shared_ptr<cShaderProgram> cShaderProgram::Create()
+	{
+		std::shared_ptr<cShaderProgram> shader = std::make_shared<cShaderProgram>();
+		shader->m_Self = shader;
+
+		return shader;
+	}
+
 	//Load the shader
-	void cShaderProgram::Load(std::string& _path)
+	void cShaderProgram::Load(std::string _path)
 	{
 		std::ifstream file(_path.c_str());
 

@@ -5,27 +5,27 @@
 
 namespace Oz
 {
-	std::shared_ptr<cVertexArray> cMesh::Create()
-	{
-		std::shared_ptr<cVertexArray> model = std::make_shared<cVertexArray>();
-
-		return model;
-	}
-
-	std::shared_ptr<cMesh> cMesh::Load(std::string& _path)
+	std::shared_ptr<cMesh> cMesh::Create()
 	{
 		std::shared_ptr<cMesh> mesh = std::make_shared<cMesh>();
 		mesh->m_Self = mesh;
-		m_Model = mesh->Create();
 
-		m_Model->Load(_path); //Create a new vertex based on the path given
+		return mesh;
+	}
+
+	std::shared_ptr<cMesh> cMesh::Load(std::string _path)
+	{
+		
+		m_Self.lock()->m_Model = std::make_shared<cVertexArray>();
+
+		m_Self.lock()->m_Model->Load(_path); //Create a new vertex based on the path given
 
 		//for (int i = 0; i < m_Faces.size(); i++)
 		//{
 		//	m_Model->setBuffer(_path, m_Faces.at(i).getVertex()); //Set the mesh's buffer according to the face's values
 		//}
 
-		return mesh; //Return the model
+		return m_Self.lock(); //Return the model
 	}
 
 	void cMesh::addFace()

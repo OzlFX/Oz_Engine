@@ -12,11 +12,11 @@ int main()
 	//std::shared_ptr<Oz::cMesh> mesh = Program->addResource("../src/Resources/Models/curuthers.obj");
 
 	std::shared_ptr<Oz::cMeshRenderer> mr = gameObject->addComponent<Oz::cMeshRenderer>();
-	//std::shared_ptr<Oz::cMesh> mesh = Program->getResource()->Load<Oz::cMesh>("../src/Resources/Models/curuthers.obj"); //Load obj file
-	//mr->setMesh(mesh);
+	std::shared_ptr<Oz::cMesh> mesh = Program->getResource()->Load<Oz::cMesh>("../src/Resources/Models/curuthers.obj"); //Load obj file
+	mr->setMesh(mesh);
 
-	//std::shared_ptr<Oz::cMaterial> material = Program->getResource()->Load<Oz::cMaterial>("../src/Resources/Shaders/TestShader.glsl"); //Load the shader
-	//mr->setMaterial(material);
+	std::shared_ptr<Oz::cMaterial> material = Program->getResource()->Load<Oz::cMaterial>("../src/Resources/Shaders/TestShader.glsl"); //Load the shader
+	mr->setMaterial(material);
 
 	try
 	{

@@ -103,8 +103,9 @@ namespace Oz
 		///Maybe???
 		if (m_GameObject->getComponent<cMeshRenderer>())
 		{
-			std::shared_ptr<cMesh> mesh = m_Context->createMesh();
-			std::shared_ptr<cShaderProgram> shader = m_Context->createShader();
+			m_Resources->Create<cMesh>() = m_Context->createMesh();
+			m_Resources->Create<cShaderProgram>() = m_Context->createShader();
+			m_Resources->Create<cMaterial>() = m_Context->createMaterial();
 		}
 
 		return m_GameObject;
