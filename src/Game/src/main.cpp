@@ -9,13 +9,12 @@ int main()
 	
 	std::shared_ptr<Oz::cTransform> tr = gameObject->addComponent<Oz::cTransform>();
 	//gameObject->getComponent<Oz::cTransform>()->lookAt(glm::vec3 (2.0f, 0.0f, 1.0f));
-	//std::shared_ptr<Oz::cMesh> mesh = Program->addResource("../src/Resources/Models/curuthers.obj");
-
+	
 	std::shared_ptr<Oz::cMeshRenderer> mr = gameObject->addComponent<Oz::cMeshRenderer>();
-	std::shared_ptr<Oz::cMesh> mesh = Program->getResource()->Load<Oz::cMesh>("../src/Resources/Models/curuthers.obj"); //Load obj file
+	std::shared_ptr<Oz::cMesh> mesh = Program->getResource()->Load<Oz::cMesh>("..\src\Resources\Models\curuthers.obj"); //Load obj file
 	mr->setMesh(mesh);
 
-	std::shared_ptr<Oz::cMaterial> material = Program->getResource()->Load<Oz::cMaterial>("../src/Resources/Shaders/TestShader.glsl"); //Load the shader
+	std::shared_ptr<Oz::cMaterial> material = Program->getResource()->Load<Oz::cMaterial>("..\src\Resources\Shaders\TestShader.glsl"); //Load the shader
 	mr->setMaterial(material);
 
 	try

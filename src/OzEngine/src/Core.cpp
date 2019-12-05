@@ -100,14 +100,6 @@ namespace Oz
 		m_GameObject->m_Self = m_GameObject;
 		m_GameObject->m_Core = m_Self;
 
-		///Maybe???
-		if (m_GameObject->getComponent<cMeshRenderer>())
-		{
-			m_Resources->Create<cMesh>() = m_Context->createMesh();
-			m_Resources->Create<cShaderProgram>() = m_Context->createShader();
-			m_Resources->Create<cMaterial>() = m_Context->createMaterial();
-		}
-
 		return m_GameObject;
 	}
 

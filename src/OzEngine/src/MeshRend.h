@@ -14,6 +14,7 @@ namespace Oz
 	{
 	private:
 
+		//Vars
 		std::weak_ptr<cMesh> m_Mesh;
 		std::shared_ptr<cMaterial> m_Material;
 		std::shared_ptr<cTexture> m_Texture;

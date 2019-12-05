@@ -1,6 +1,7 @@
 #include "RenderSystem/ShaderProgram.h"
 #include "Texture.h"
 #include "Material.h"
+#include "Context.h"
 
 namespace Oz
 {
@@ -12,7 +13,7 @@ namespace Oz
 
 	std::shared_ptr<cMaterial> cMaterial::Create()
 	{
-		std::shared_ptr<cMaterial> material = std::make_shared<cMaterial>();
+		std::shared_ptr<cMaterial> material = m_Context->createMaterial();
 		material->m_Self = material;
 
 		return material;

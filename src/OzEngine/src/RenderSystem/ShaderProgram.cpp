@@ -101,7 +101,7 @@ namespace Oz
 	//Create the shader
 	std::shared_ptr<cShaderProgram> cShaderProgram::Create()
 	{
-		std::shared_ptr<cShaderProgram> shader = std::make_shared<cShaderProgram>();
+		std::shared_ptr<cShaderProgram> shader = m_Context->createShader();
 		shader->m_Self = shader;
 
 		return shader;

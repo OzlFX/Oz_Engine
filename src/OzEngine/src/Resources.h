@@ -32,24 +32,12 @@ namespace Oz
 		{
 			std::shared_ptr<T> resource = std::make_shared<T>(); //Make a new thingy
 
+			resource->Create(); //Create the resource
 			resource->Load(_path); //Load a resource
 			
 			return resource;
 		}
 
-		template <typename T>
-		std::shared_ptr<T> Create()
-		{
-			//for (std::list<std::shared_ptr<cResource>>::iterator it = m_Resources.begin(); it != m_Resources.end(); it++)
-			//{
-				std::shared_ptr<T> resource = std::make_shared<T>(); //Make a new resource
-
-				resource->Create(); //Create the resource
-
-				m_Resources.push_back(resource); //Add resource
-			//}
-				return resource;
-		}
 	};
 }
 

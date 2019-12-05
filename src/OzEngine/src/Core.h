@@ -14,6 +14,8 @@ namespace Oz
 	class cGameObject;
 	class cResources;
 	class cMaterial;
+	class cMesh;
+	class cShaderProgram;
 	class cContext;
 
 	class cCore : private cNonCopyable

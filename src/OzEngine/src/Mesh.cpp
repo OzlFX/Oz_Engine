@@ -7,7 +7,7 @@ namespace Oz
 {
 	std::shared_ptr<cMesh> cMesh::Create()
 	{
-		std::shared_ptr<cMesh> mesh = std::make_shared<cMesh>();
+		std::shared_ptr<cMesh> mesh = m_Context->createMesh();
 		mesh->m_Self = mesh;
 
 		return mesh;
