@@ -1,6 +1,7 @@
 #include "RenderSystem/ShaderProgram.h"
 #include "Texture.h"
 #include "Material.h"
+#include "MaterialAttribute.h"
 #include "Context.h"
 
 namespace Oz
@@ -26,9 +27,14 @@ namespace Oz
 		return m_Self.lock();
 	}
 
-	void cMaterial::setValue(std::string _name, std::weak_ptr<cTexture> _value)
+	void cMaterial::setValue(std::string _name, std::weak_ptr<cTexture> _texture)
 	{
-		//m_Shader.lock()->setUniform(_name, _value);
+		for (std::list<cMaterialAttribute>::iterator it = m_Attrib.begin(); it != m_Attrib.end(); it++)
+		{
+			m_Self.lock()->m_Shader.lock()->setUniform("in_Texture", _texture);
+
+			m_Attrib.push_back(*it);
+		}
 	}
 
 	void cMaterial::setValue(std::string _name, float _value)

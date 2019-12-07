@@ -16,11 +16,6 @@ namespace Oz
 
 	class cResources
 	{
-		friend class cMesh;
-		friend class cShaderProgram;
-		friend class cTexture;
-		friend class cMaterial;
-
 	private:
 
 		std::list<std::shared_ptr<cResource>> m_Resources;

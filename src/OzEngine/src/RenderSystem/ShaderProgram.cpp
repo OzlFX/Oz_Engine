@@ -3,6 +3,7 @@
 #include "OzEngine/src/Context.h"
 #include "OzEngine/src/Mesh.h"
 #include "OzEngine/src/Exception.h"
+#include "OzEngine/src/Texture.h"
 
 #include <glm/ext.hpp>
 
@@ -74,6 +75,7 @@ namespace Oz
 		glAttachShader(m_ID, vertexShaderId); //Attach the vertex shader to the shader program
 		glAttachShader(m_ID, fragmentShaderId); //Attach the fragment shader to the shader program
 
+		//Bind the shaders
 		glBindAttribLocation(m_ID, 0, "in_Position");
 		glBindAttribLocation(m_ID, 1, "in_Color");
 		glBindAttribLocation(m_ID, 2, "in_TexCoord");
@@ -81,10 +83,6 @@ namespace Oz
 
 		glLinkProgram(m_ID);
 		glGetProgramiv(m_ID, GL_LINK_STATUS, &success);
-
-		//Bind the shaders
-		//glBindAttribLocation(m_ID, 0, "in_Position");
-		//glBindAttribLocation(m_ID, 1, "in_Color");
 
 		//Checks for errors
 		if (glGetError() != GL_NO_ERROR)
@@ -142,21 +140,33 @@ namespace Oz
 	//Draw Mesh
 	void cShaderProgram::Draw(std::shared_ptr<cMesh> _mesh)
 	{
-		glEnable(GL_DEPTH_TEST);
-		glEnable(GL_CULL_FACE);
-		glEnable(GL_BLEND);
-
 		glUseProgram(m_ID); //Use the current shader program
 		glBindVertexArray(_mesh->getID());
 
-		glDrawArrays(GL_TRIANGLES, _mesh->m_Faces.size(), _mesh->m_Model->getVertexCount());
+		for (size_t i = 0; i < m_TexSampler.size(); i++)
+		{
+			glActiveTexture(GL_TEXTURE0 + i);
+
+			if (m_TexSampler.at(i).m_Texture)
+			{
+				glBindTexture(GL_TEXTURE_2D, m_TexSampler.at(i).m_Texture->getID());
+			}
+			else
+			{
+				glBindTexture(GL_TEXTURE_2D, 0);
+			}
+		}
+
+		glDrawArrays(GL_TRIANGLES, 0, _mesh->m_Model->getVertexCount());
+
+		for (size_t i = 0; i < m_TexSampler.size(); i++)
+		{
+			glActiveTexture(GL_TEXTURE0 + i);
+			glBindTexture(GL_TEXTURE_2D, 0);
+		}
 
 		glBindVertexArray(0);
 		glUseProgram(0);
-
-		glDisable(GL_BLEND);
-		glDisable(GL_CULL_FACE);
-		glDisable(GL_DEPTH_TEST);
 	}
 
 	/*Set Uniform overloads */
@@ -200,6 +210,38 @@ namespace Oz
 
 		glUseProgram(m_ID);
 		glUniformMatrix4fv(uniformId, 1, GL_FALSE, glm::value_ptr(_value));
+		glUseProgram(0);
+	}
+
+	void cShaderProgram::setUniform(const std::string _uniform, std::weak_ptr<cTexture> _texture)
+	{
+		GLint uniformId = glGetUniformLocation(m_ID, _uniform.c_str());
+
+		if (uniformId == -1)
+		{
+			return;
+		}
+
+		for (size_t i = 0; i < m_TexSampler.size(); i++)
+		{
+			if (m_TexSampler.at(i).m_ID == uniformId)
+			{
+				m_TexSampler.at(i).m_Texture = _texture.lock();
+
+				glUseProgram(m_ID);
+				glUniform1i(uniformId, i);
+				glUseProgram(0);
+				return;
+			}
+		}
+
+		sTextureSampler texSampler;
+		texSampler.m_ID = uniformId;
+		texSampler.m_Texture = _texture.lock();
+		m_TexSampler.push_back(texSampler);
+
+		glUseProgram(m_ID);
+		glUniform1i(uniformId, m_TexSampler.size() - 1);
 		glUseProgram(0);
 	}
 

@@ -7,10 +7,13 @@
 
 namespace Oz
 {
+	class cContext;
+
 	class cTexture : private cNonCopyable, public cResource
 	{
 
 		friend class cResources;
+		friend class cContext;
 
 	private:
 
@@ -19,16 +22,34 @@ namespace Oz
 		bool m_Dirty;
 		int m_Type;
 
+		//Default size for texture
+		unsigned int m_Width;
+		unsigned int m_Height;
+
+		unsigned int m_BorderSize; //The border size for the image
+
+		int m_Channels;
+
+		std::weak_ptr<cTexture> m_Self;
+		std::shared_ptr<cContext> m_Context;
+
 		//Functions
-		//std::shared_ptr<cTexture> Create(unsigned int _width, unsigned int _height);
-		//std::shared_ptr<cTexture> Load(std::string _path);
+		std::shared_ptr<cTexture> Create(); //Create the texture
+		std::shared_ptr<cTexture> Load(std::string _path); //Load the texture
 
 	public:
 
+		void setSize(unsigned int _width, unsigned int _height); //Set the texture's size (cannot be negative)
+
+		void setBorder(unsigned int _borderSize); //Set the desired border for the image
+
+		/* Probably wont ever use these */
 		//void setPixel(unsigned int _x, unsigned int _y, glm::vec3 _colour);
 		//void setPixel(unsigned int _x, unsigned int _y, glm::vec4 _colour);
 
-		//~cTexture();
+		GLuint getID(); //Get the ID
+
+		~cTexture();
 	};
 }
 

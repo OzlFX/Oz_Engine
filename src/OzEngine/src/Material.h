@@ -2,7 +2,7 @@
 #define _CMATERIAL_H_
 
 #include <memory>
-#include <vector>
+#include <list>
 #include <string>
 
 #include "Resource.h"
@@ -11,19 +11,20 @@ namespace Oz
 {
 	class cContext;
 	class cShaderProgram;
-	//class cMaterialAttribute;
-	//class cTexture;
+	class cMaterialAttribute;
+	class cTexture;
 
 	class cMaterial : private cNonCopyable, public cResource
 	{
 		friend class cContext;
+		friend class cResources;
 
 	private:
 
 		std::shared_ptr<cContext> m_Context;
 		std::weak_ptr<cShaderProgram> m_Shader;
 		std::weak_ptr<cMaterial> m_Self;
-		//std::vector<cMaterialAttribute> m_Attrib;
+		std::list<cMaterialAttribute> m_Attrib;
 
 	public:
 
@@ -32,7 +33,7 @@ namespace Oz
 
 		void setShader(std::weak_ptr<cShaderProgram> _shader); //Set the shader
 
-		void setValue(std::string _name, std::weak_ptr<cTexture> _value); //Set the value with a texture
+		void setValue(std::string _name, std::weak_ptr<cTexture> _texture); //Set the name and texture
 		void setValue(std::string _name, float _value); //Set the value with a float
 
 		std::shared_ptr<cShaderProgram> getShader(); //Get the shader

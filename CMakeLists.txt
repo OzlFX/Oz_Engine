@@ -8,6 +8,7 @@ set (Oz_Engine_VERSION_MINOR 0)
 include_directories(
 	src
 	contrib/glm
+	contrib/stb_image
 	contrib/msvc-windows-x86/glew/include
 	contrib/msvc-windows-x86/SDL2/include
 )

@@ -57,11 +57,21 @@ namespace Oz
 		return mesh;
 	}
 
+	//Create the material
 	std::shared_ptr<cMaterial> cContext::createMaterial()
 	{
 		std::shared_ptr<cMaterial> material = std::make_shared<cMaterial>();
 		material->m_Context = m_Self.lock();
 
 		return material;
+	}
+
+	//Create the texture
+	std::shared_ptr<cTexture> cContext::createTexture()
+	{
+		std::shared_ptr<cTexture> texture = std::make_shared<cTexture>();
+		texture->m_Context = m_Self.lock();
+
+		return texture;
 	}
 }

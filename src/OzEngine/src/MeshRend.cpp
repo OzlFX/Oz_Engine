@@ -16,6 +16,7 @@ namespace Oz
 		m_Material->getShader()->setUniform("in_Model", glm::mat4(1.0f));
 		m_Material->getShader()->setUniform("in_Projection", glm::mat4(1.0f));
 		m_Material->getShader()->Draw(m_Mesh.lock());
+		glUseProgram(m_Material->getShader()->getID);
 	}
 
 	void cMeshRenderer::setMesh(std::weak_ptr<cMesh> _mesh)

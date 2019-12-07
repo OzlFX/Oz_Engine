@@ -27,6 +27,7 @@ namespace Oz
 		std::shared_ptr<cVertexBuffer> createBuffer(); //Create buffer
 		std::shared_ptr<cMesh> createMesh(); //Create Mesh
 		std::shared_ptr<cMaterial> createMaterial(); //Create Material
+		std::shared_ptr<cTexture> createTexture(); //Create Texture
 
 	};
 }
