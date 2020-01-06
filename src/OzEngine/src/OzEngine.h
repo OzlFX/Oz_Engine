@@ -4,13 +4,18 @@
 #include "Core.h"
 #include "GameObject.h"
 #include "Context.h"
+
 #include "Components.h"
 #include "Transform.h"
 #include "Camera.h"
-#include "Light.h"
 #include "MeshRend.h"
+#include "SoundSystem.h"
 
 #include "Resources.h"
+#include "Light.h"
+#include "Material.h"
+#include "Sound.h"
+
 #include "Environment.h"
 
 #include "NonCopyable.h"

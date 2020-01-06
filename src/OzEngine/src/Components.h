@@ -9,9 +9,7 @@ namespace Oz
 	class cGameObject;
 	class cCore;
 	class cResources;
-	class cTransform;
-	class cMeshRenderer;
-
+	
 	class cComponent
 	{
 		friend class cGameObject;
@@ -30,7 +28,6 @@ namespace Oz
 
 		std::shared_ptr<cCore> getCore(); //Get the core
 		std::shared_ptr<cGameObject> getGameObject(); //Get game object
-		std::shared_ptr<cTransform> getTransform(); //Get the transform
 		std::shared_ptr<cResources> getResources(); //Get the resources
 
 		virtual ~cComponent();

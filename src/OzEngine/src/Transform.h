@@ -21,6 +21,8 @@ namespace Oz
 
 	public:
 
+		//cTransform(glm::vec3 _pos, glm::vec3 _scale, glm::vec3 _rotation);
+
 		//Setters
 		void setPos(glm::vec3 _pos);
 		void setScale(glm::vec3 _scale);

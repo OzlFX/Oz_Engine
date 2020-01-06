@@ -9,13 +9,16 @@ include_directories(
 	src
 	contrib/glm
 	contrib/stb_image
+	contrib/stb_vorbis
 	contrib/msvc-windows-x86/glew/include
 	contrib/msvc-windows-x86/SDL2/include
+	contrib/msvc-windows-x86/AL/include
 )
 
 link_directories(
 	${CMAKE_SOURCE_DIR}/contrib/msvc-windows-x86/glew/lib
 	${CMAKE_SOURCE_DIR}/contrib/msvc-windows-x86/SDL2/lib
+	${CMAKE_SOURCE_DIR}/contrib/msvc-windows-x86/AL/lib
 )
 
 #Add the libraries to the project
@@ -26,8 +29,11 @@ add_library(OzEngine
 	src/OzEngine/src/Core.cpp
 	src/OzEngine/src/GameObject.h
 	src/OzEngine/src/GameObject.cpp
+	src/OzEngine/src/Components/ComponentIncludes.h
 	src/OzEngine/src/Components.h
 	src/OzEngine/src/Components.cpp
+	src/OzEngine/src/Collision.h
+	src/OzEngine/src/Collision.cpp
 	src/OzEngine/src/Exception.h
 	src/OzEngine/src/Exception.cpp
 	src/OzEngine/src/Transform.h
@@ -40,6 +46,8 @@ add_library(OzEngine
 	src/OzEngine/src/Mesh.cpp
 	src/OzEngine/src/Texture.h
 	src/OzEngine/src/Texture.cpp
+	src/OzEngine/src/RenderTexture.h
+	src/OzEngine/src/RenderTexture.cpp
 	src/OzEngine/src/MeshRend.h
 	src/OzEngine/src/MeshRend.cpp
 	src/OzEngine/src/Resource.h
@@ -61,9 +69,15 @@ add_library(OzEngine
 	src/OzEngine/src/RenderSystem/ShaderProgram.cpp
 	src/OzEngine/src/Utilities/Util.h
 	src/OzEngine/src/Utilities/Util.cpp
+	src/OzEngine/src/SoundSystem.h
+	src/OzEngine/src/SoundSystem.cpp
+	src/OzEngine/src/PlayerController.h
+	src/OzEngine/src/PlayerController.cpp
+	src/OzEngine/src/Sound.h
+	src/OzEngine/src/Sound.cpp
 )
 
-target_link_libraries(OzEngine SDL2 opengl32 glew32)
+target_link_libraries(OzEngine SDL2 opengl32 OpenAL32 glew32)
 
 #Add main executable
 add_executable(Game

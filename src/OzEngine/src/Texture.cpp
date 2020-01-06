@@ -1,25 +1,17 @@
 #include "Texture.h"
 #include "Context.h"
+#define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
 namespace Oz
 {
 	std::shared_ptr<cTexture> cTexture::Create()
 	{
-		std::shared_ptr<cTexture> texture = m_Context->createTexture();
-		texture->m_Self = texture;
-
-		texture->m_Width = 32;
-		texture->m_Height = 32;
+		std::shared_ptr<cTexture> texture = std::make_shared<cTexture>();
 
 		texture->m_BorderSize = 0;
 
-		glGenTextures(1, &m_ID); //Generate the texture
-		glBindTexture(GL_TEXTURE_2D, m_ID);  //Bind the texture
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, m_Width, m_Height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL); //Generate the texture based on values
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glBindTexture(GL_TEXTURE_2D, 0); //Unbind the texture
+		texture->m_Self = texture;
 
 		return texture;
 	}
@@ -39,9 +31,15 @@ namespace Oz
 	{
 		m_Channels = 0;
 
-		unsigned char *data = stbi_load(_path.c_str(), 0, 0, &m_Channels, 4); //Create the image data for usage by the GPU
+		int w = 0;
+		int h = 0;
+
+		unsigned char *data = stbi_load(_path.c_str(), &w, &h, &m_Channels, 4); //Create the image data for usage by the GPU
 
 		if (!data) throw std::exception();
+
+		m_Width = w;
+		m_Height = h;
 
 		glGenTextures(1, &m_ID); //Generate the texture
 
@@ -49,6 +47,10 @@ namespace Oz
 
 		glBindTexture(GL_TEXTURE_2D, m_ID); //Bind the texture
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, m_Width, m_Height, m_BorderSize, GL_RGBA, GL_UNSIGNED_BYTE, data); //Generate the texture based on values
+
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
 		free(data);
 		glGenerateMipmap(GL_TEXTURE_2D); //Generate the mipmap
 
@@ -67,6 +69,11 @@ namespace Oz
 	{
 
 	}*/
+
+	glm::vec2 cTexture::getSize()
+	{
+		return m_Size = glm::vec2(m_Width, m_Height);
+	}
 
 	GLuint cTexture::getID()
 	{

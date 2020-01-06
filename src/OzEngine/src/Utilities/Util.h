@@ -11,6 +11,7 @@ namespace Oz
 		static void splitStringLineEnding(const std::string& _input, std::vector<std::string>& _output);
 		static void splitString(const std::string& _input, char _splitter, std::vector<std::string>& _output);
 		static void splitStringWhiteSpace(const std::string& _input, std::vector<std::string>& _output);
+		static void createWords(const std::string& _input, std::vector<std::string>& _output);
 	};
 }
 

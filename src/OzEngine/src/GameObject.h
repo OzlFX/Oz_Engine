@@ -53,6 +53,25 @@ namespace Oz
 			}
 		}
 
+		//Check if the game object has the component
+		template <typename T>
+		bool hasComponent(std::shared_ptr<T> _component)
+		{
+			for (std::list<std::shared_ptr<cComponent>>::iterator it = m_Components.begin(); it != m_Components.end(); it++)
+			{
+				std::shared_ptr<T> component = std::dynamic_pointer_cast<T>(*it);
+
+				if (component) //Check if of component was added to game object
+				{
+					return true; //Return true if has it
+				}
+				else
+				{
+					return false; //Return false if not
+				}
+			}
+		}
+
 		//Add Component to the game object
 		template <typename T, typename... A>
 		std::shared_ptr<T> addComponent(A... args)
@@ -70,7 +89,7 @@ namespace Oz
 				return component;
 			}
 
-			throw Oz::Exception("Added component isnt of type Component!"); //Thow engine exception if the added component isnt of the type component
+			throw Oz::Exception("Added component isnt of type Component!"); //Throw engine exception if the added component isnt of the type component
 		}
 
 		std::shared_ptr<cTransform> getTransform(); //Get the object transform

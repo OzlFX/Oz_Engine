@@ -12,30 +12,24 @@
 namespace Oz
 {
 	class cShaderProgram;
-	class cContext;
 
 	class cCamera : public cComponent
 	{
 	private:
 
 		//Vars
-		std::weak_ptr<cCamera> m_Self;
-		std::list<std::shared_ptr<cShaderProgram>> m_Shaders;
-		std::shared_ptr<cShaderProgram> m_Shader;
-		std::shared_ptr<cContext> m_Context;
-
-		//Functions
-		void onInit(); //Initialise variables when called
-		void onUpdate();
+		glm::mat4 m_ViewMatrix, m_Projection;
+		//std::list<std::shared_ptr<cShaderProgram>> m_Shaders;
 
 	public:
 
-		void addShader(std::weak_ptr<cShaderProgram> _shader); //Add a new shader to render 
+		glm::mat4 getView() const; //Get the camera view
+		glm::mat4 getProjection() const; //Get the projection
 
-		glm::mat4 getView(); //Get the camera view
-		glm::mat4 getProjection(); //Get the projection
-
-		void setProjection(); //Set the projection matrix
+		//Functions
+		void onBegin(); //On start
+		void onInit(); //Initialise variables when called
+		void onUpdate(); //Udates camera each frame
 
 	};
 }

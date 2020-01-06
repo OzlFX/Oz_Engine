@@ -6,9 +6,10 @@
 
 namespace Oz
 {
+	class cTexture;
+
 	class cMaterialAttribute
 	{
-		class cTexture;
 	private:
 
 		float m_Value;
@@ -16,8 +17,7 @@ namespace Oz
 	public:
 
 		std::string m_Name;
-		int m_Type;
-		std::weak_ptr<cTexture> m_Texture;
+		std::shared_ptr<cTexture> m_Texture;
 
 	};
 }

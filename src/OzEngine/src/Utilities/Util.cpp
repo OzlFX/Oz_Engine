@@ -83,4 +83,24 @@ namespace Oz
 			_output.push_back(_curr);
 		}
 	}
+
+	void cUtil::createWords(const std::string & _input, std::vector<std::string>& _output)
+	{
+		std::string _curr;
+
+		_output.clear();
+
+		for (size_t i = 0; i < _input.length(); i++)
+		{
+			if (_input.at(i) == ' ' || _input.at(i) == '\r' || _input.at(i) == '\n' || _input.at(i) == '\t' || _input.at(i) == ';')
+			{
+				_output.push_back(_curr);
+				_curr = "";
+			}
+			else
+			{
+				_curr += _input.at(i);
+			}
+		}
+	}
 }

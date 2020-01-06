@@ -12,9 +12,17 @@
 
 namespace Oz
 {
-	class cVertexBuffer;
-	struct sFace;
+	struct sFace
+	{
+		//Vars
+		glm::vec3 posA, posB, posC;
+		glm::vec2 texCoordA, texCoordB, texCoordC;
+		glm::vec3 normA, normB, normC;
+		glm::vec2 lightA, lightB, lightC;
+	};
 
+	class cVertexBuffer;
+	
 	class cVertexArray
 	{
 	private:
@@ -27,17 +35,10 @@ namespace Oz
 
 	public:
 
-		cVertexArray();
-
 		void setBuffer(std::string _attrib, std::weak_ptr<cVertexBuffer> _buffer);
 		int getVertexCount();
 
 		void Load(const std::string& _path);
-
-		std::vector<sFace> createFaces();
-
-		//void Parse(const std::string& _data);
-		//void safeParse(const std::string& _data, std::string& _currLine);
 
 		GLuint getID();
 

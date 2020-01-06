@@ -1,5 +1,4 @@
-#include "Transform.h"
-#include "GameObject.h"
+#include "Components/ComponentIncludes.h"
 #include <glm/gtc/matrix_transform.hpp>
 
 namespace Oz

@@ -37,7 +37,7 @@ namespace Oz
 	{
 		for (std::list<std::shared_ptr<cComponent>>::iterator it = m_Components.begin(); it != m_Components.end(); it++)
 		{
-			(*it)->onDisplay(); //Display all components
+			(*it)->onDisplay(); //Call each components' display function
 		}
 	}
 

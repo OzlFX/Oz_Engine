@@ -7,13 +7,12 @@
 
 namespace Oz
 {
-	class cContext;
-
 	class cTexture : private cNonCopyable, public cResource
 	{
 
 		friend class cResources;
-		friend class cContext;
+		friend class cRenderTexture;
+		friend class cMaterial;
 
 	private:
 
@@ -26,12 +25,13 @@ namespace Oz
 		unsigned int m_Width;
 		unsigned int m_Height;
 
+		glm::vec2 m_Size;
+
 		unsigned int m_BorderSize; //The border size for the image
 
 		int m_Channels;
 
 		std::weak_ptr<cTexture> m_Self;
-		std::shared_ptr<cContext> m_Context;
 
 		//Functions
 		std::shared_ptr<cTexture> Create(); //Create the texture
@@ -39,9 +39,11 @@ namespace Oz
 
 	public:
 
-		void setSize(unsigned int _width, unsigned int _height); //Set the texture's size (cannot be negative)
+		virtual void setSize(unsigned int _width, unsigned int _height); //Set the texture's size (cannot be negative)
 
 		void setBorder(unsigned int _borderSize); //Set the desired border for the image
+
+		glm::vec2 getSize();
 
 		/* Probably wont ever use these */
 		//void setPixel(unsigned int _x, unsigned int _y, glm::vec3 _colour);

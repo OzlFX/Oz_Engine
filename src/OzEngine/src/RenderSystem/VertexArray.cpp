@@ -1,16 +1,18 @@
 #include "VertexArray.h"
 #include "VertexBuffer.h"
+#include "OzEngine/src/Context.h"
 #include "OzEngine/src/Utilities/Util.h"
 #include "OzEngine/src/Exception.h"
-#include "OzEngine/src/Mesh.h"
 
 #include <fstream>
 #include <iostream>
 
 namespace Oz
 {
-	cVertexArray::cVertexArray() : m_Dirty(false)
+	void cVertexArray::Load(const std::string& _path)
 	{
+		m_Dirty = false;
+
 		//Create new Vertex Array Object (VAO) on the GPU and bind it
 		glGenVertexArrays(1, &m_ID);
 
@@ -20,10 +22,7 @@ namespace Oz
 		}
 
 		m_Buffers.resize(10);
-	}
 
-	void cVertexArray::Load(const std::string& _path)
-	{
 		std::ifstream file(_path.c_str());
 
 		if (!file.is_open())
@@ -32,7 +31,9 @@ namespace Oz
 		}
 		
 		std::string line;
-		
+		std::string obj;
+		std::vector<std::string> lines;
+
 		std::vector<glm::vec3> pos;
 		std::vector<glm::vec2> texCoords;
 		std::vector<glm::vec3> norms;
@@ -41,10 +42,17 @@ namespace Oz
 		while (!file.eof())
 		{
 			std::getline(file, line);
-			if (line.length() < 1) continue;
+			obj += line + "\n";
+		}
+
+		Oz::cUtil::splitStringLineEnding(obj, lines); //Remove line endings
+
+		for (std::vector<std::string>::iterator it = lines.begin(); it != lines.end(); it++)
+		{
+			if (it->length() < 1) continue;
 
 			std::vector<std::string> splitLine;
-			Oz::cUtil::splitStringWhiteSpace(line, splitLine);
+			Oz::cUtil::splitStringWhiteSpace(*it, splitLine); //Remove white spaces
 
 			if (splitLine.size() < 1) continue;
 
@@ -120,11 +128,68 @@ namespace Oz
 				m_Faces.push_back(quadFace);
 			}
 		}
-	}
 
-	std::vector<sFace> cVertexArray::createFaces()
-	{
-		return m_Faces;
+		if (pos.size() > 0)
+		{
+			std::shared_ptr<cVertexBuffer> posBuffer = std::make_shared<cVertexBuffer>();
+
+			for (std::vector<sFace>::iterator it = m_Faces.begin();
+				it != m_Faces.end(); it++)
+			{
+				posBuffer->Add(it->posA);
+				posBuffer->Add(it->posB);
+				posBuffer->Add(it->posC);
+			}
+
+			setBuffer("in_Position", posBuffer);
+		}
+
+		if (texCoords.size() > 0)
+		{
+			std::shared_ptr<cVertexBuffer> texCoordBuffer = std::make_shared<cVertexBuffer>();
+
+			for (std::vector<sFace>::iterator it = m_Faces.begin();
+				it != m_Faces.end(); it++)
+			{
+				texCoordBuffer->Add(it->texCoordA);
+				texCoordBuffer->Add(it->texCoordB);
+				texCoordBuffer->Add(it->texCoordC);
+			}
+
+			setBuffer("in_TexCoord", texCoordBuffer);
+		}
+
+		if (norms.size() > 0)
+		{
+			std::shared_ptr<cVertexBuffer> normBuffer = std::make_shared<cVertexBuffer>();
+
+			for (std::vector<sFace>::iterator it = m_Faces.begin();
+				it != m_Faces.end(); it++)
+			{
+				normBuffer->Add(it->normA);
+				normBuffer->Add(it->normB);
+				normBuffer->Add(it->normC);
+			}
+
+			setBuffer("in_Normal", normBuffer);
+		}
+
+		if (lights.size() > 0)
+		{
+			std::shared_ptr<cVertexBuffer> lightBuffer = std::make_shared<cVertexBuffer>();
+
+			for (std::vector<sFace>::iterator it = m_Faces.begin();
+				it != m_Faces.end(); it++)
+			{
+				lightBuffer->Add(it->lightA);
+				lightBuffer->Add(it->lightB);
+				lightBuffer->Add(it->lightC);
+			}
+
+			setBuffer("in_Color", lightBuffer);
+		}
+
+		m_Dirty = true;
 	}
 
 	void cVertexArray::setBuffer(std::string _attrib, std::weak_ptr<cVertexBuffer> _buffer)
@@ -150,7 +215,7 @@ namespace Oz
 			throw std::exception();
 		}
 
-		m_Dirty = true;
+		//m_Dirty = true;
 	}
 
 	int cVertexArray::getVertexCount()
@@ -162,59 +227,6 @@ namespace Oz
 
 		return m_Buffers.at(0)->getDataSize() / m_Buffers.at(0)->getComponents();
 	}
-	/*
-	void cVertexArray::Parse(const std::string& _data)
-	{
-		std::string currLine;
-
-		try
-		{
-			safeParse(_data, currLine); //Parse the data to be used
-		}
-		catch (std::exception& e)
-		{
-			throw Oz::Exception("Failed to obtain model: " + currLine);
-		}
-	}
-
-	void cVertexArray::safeParse(const std::string& _data, std::string& _currLine)
-	{
-		std::vector<std::string> lines;
-		Oz::cUtil::splitStringLineEnding(_data, lines);
-
-		std::vector<glm::vec3> pos;
-		std::vector<glm::vec2> texCoords;
-		std::vector<glm::vec3> norms;
-
-		for (std::vector<std::string>::iterator it = lines.begin(); it != lines.end(); it++)
-		{
-			_currLine = *it;
-			if (it->length() < 1) continue;
-#ifdef _DEBUG
-			std::cout << "Line " + *it << std::endl;
-#endif
-
-			std::vector<std::string> splitLine;
-			Oz::cUtil::splitStringWhiteSpace(*it, splitLine);
-			if (splitLine.size() < 1) continue;
-
-			if (splitLine.at(0) == "v")
-			{
-				pos.push_back(glm::vec3(atof(splitLine.at(1).c_str()), atof(splitLine.at(2).c_str()), atof(splitLine.at(3).c_str())));
-			}
-			else if (splitLine.at(0) == "vt")
-			{
-				texCoords.push_back(glm::vec2(atof(splitLine.at(1).c_str()), 1.0f - atof(splitLine.at(2).c_str())));
-			}
-			else if (splitLine.at(0) == "vn")
-			{
-				norms.push_back(glm::vec3(
-				atof(splitLine.at(1).c_str()),
-				atof(splitLine.at(2).c_str()),
-				atof(splitLine.at(3).c_str())));
-			}
-		}
-	}*/
 
 	GLuint cVertexArray::getID()
 	{

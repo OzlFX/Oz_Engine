@@ -1,7 +1,5 @@
 #include "Components.h"
-#include "GameObject.h"
-#include "Transform.h"
-#include "MeshRend.h"
+#include "Components/ComponentIncludes.h"
 #include "Resources.h"
 #include "Core.h"
 
@@ -31,15 +29,10 @@ namespace Oz
 
 	}
 
-	//Get the game object
+	//Get the gameobject the component is attached to
 	std::shared_ptr<cGameObject> cComponent::getGameObject()
 	{
 		return m_GameObject.lock();
-	}
-
-	std::shared_ptr<cTransform> cComponent::getTransform()
-	{
-		return m_GameObject.lock()->getComponent<cTransform>();
 	}
 
 	std::shared_ptr<cResources> cComponent::getResources()

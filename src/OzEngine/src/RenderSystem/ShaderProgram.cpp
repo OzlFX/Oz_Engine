@@ -4,6 +4,7 @@
 #include "OzEngine/src/Mesh.h"
 #include "OzEngine/src/Exception.h"
 #include "OzEngine/src/Texture.h"
+#include "OzEngine/src/RenderTexture.h"
 
 #include <glm/ext.hpp>
 
@@ -12,15 +13,41 @@
 
 namespace Oz
 {
-	cShaderProgram::cShaderProgram()
+	//Create the shader
+	std::shared_ptr<cShaderProgram> cShaderProgram::Create()
 	{
+		std::shared_ptr<cShaderProgram> shader = std::make_shared<cShaderProgram>();
+		shader->m_Self = shader;
+
+		return shader;
+	}
+
+	//Load the shader
+	void cShaderProgram::Load(std::string _path)
+	{
+		std::ifstream file(_path.c_str());
+
+		//Check to see if the file is open
+		if (!file.is_open())
+		{
+			throw Oz::Exception("Cannot find file");
+		}
+
+		//Copy contents of the file into the string
+		while (!file.eof())
+		{
+			std::string line;
+			std::getline(file, line);
+			m_Path += line + "\n";
+		}
+
 		const GLchar *src = NULL;
 
 		std::string vert = "";
 		vert += "#version 120\n";
 		vert += "#define VERTEX\n";
 		vert += m_Path;
-		
+
 		src = vert.c_str(); //Convert vertex string into GLchar for the GPU to use
 
 		GLuint vertexShaderId = glCreateShader(GL_VERTEX_SHADER); //Create the vertex shader
@@ -47,7 +74,7 @@ namespace Oz
 		std::string frag = "";
 		frag += "#version 120\n";
 		frag += "#define FRAGMENT\n";
-		frag += src;
+		frag += m_Path;
 
 		src = frag.c_str(); //Convert fragment string into GLchar for the GPU to use
 
@@ -62,8 +89,8 @@ namespace Oz
 			int length = 0;
 			glGetShaderiv(fragmentShaderId, GL_INFO_LOG_LENGTH, &length);
 
-			std::vector<char> infoLog(length);
-			glGetShaderInfoLog(fragmentShaderId, length, NULL, &infoLog.at(0));
+			std::vector<GLchar> infoLog(length);
+			glGetShaderInfoLog(fragmentShaderId, length, &length, &infoLog.at(0));
 
 			glDeleteShader(fragmentShaderId);
 
@@ -79,7 +106,7 @@ namespace Oz
 		glBindAttribLocation(m_ID, 0, "in_Position");
 		glBindAttribLocation(m_ID, 1, "in_Color");
 		glBindAttribLocation(m_ID, 2, "in_TexCoord");
-		glBindAttribLocation(m_ID, 3, "in_lightColor");
+		glBindAttribLocation(m_ID, 3, "in_Normal");
 
 		glLinkProgram(m_ID);
 		glGetProgramiv(m_ID, GL_LINK_STATUS, &success);
@@ -96,33 +123,87 @@ namespace Oz
 		glDeleteShader(fragmentShaderId); //Delete the fragment shader
 	}
 
-	//Create the shader
-	std::shared_ptr<cShaderProgram> cShaderProgram::Create()
+	void cShaderProgram::Load(std::string _vert, std::string _frag)
 	{
-		std::shared_ptr<cShaderProgram> shader = m_Context->createShader();
-		shader->m_Self = shader;
+		std::string vertShader;
+		std::string fragShader;
 
-		return shader;
-	}
+		std::ifstream file(_vert);
 
-	//Load the shader
-	void cShaderProgram::Load(std::string _path)
-	{
-		std::ifstream file(_path.c_str());
+		if (!file.is_open()) {
+			throw std::exception();
+		}
+		else {
+			while (!file.eof()) {
+				std::string line;
+				std::getline(file, line);
+				vertShader += line + "\n";
+			}
+		}
+		file.close();
 
-		//Check to see if the file is open
-		if (!file.is_open())
+		file.open(_frag);
+
+		if (!file.is_open()) {
+			throw std::exception();
+		}
+		else {
+			while (!file.eof()) {
+				std::string line;
+				std::getline(file, line);
+				fragShader += line + "\n";
+			}
+		}
+		file.close();
+
+		const char *vertex = vertShader.c_str();
+		const char *fragment = fragShader.c_str();
+
+		GLuint vertexShaderId = glCreateShader(GL_VERTEX_SHADER);
+		glShaderSource(vertexShaderId, 1, &vertex, NULL);
+		glCompileShader(vertexShaderId);
+		GLint success = 0;
+		glGetShaderiv(vertexShaderId, GL_COMPILE_STATUS, &success);
+		if (!success)
 		{
-			throw Oz::Exception("Cannot find file");
+			throw std::exception();
 		}
 
-		//Copy contents of the file into the string
-		while (!file.eof())
+		GLuint fragmentShaderId = glCreateShader(GL_FRAGMENT_SHADER);
+		glShaderSource(fragmentShaderId, 1, &fragment, NULL);
+		glCompileShader(fragmentShaderId);
+		glGetShaderiv(fragmentShaderId, GL_COMPILE_STATUS, &success);
+		if (!success)
 		{
-			std::string line;
-			std::getline(file, line);
-			m_Path += line + "\n";
+			throw std::exception();
 		}
+
+		m_ID = glCreateProgram();
+		glAttachShader(m_ID, vertexShaderId);
+		glAttachShader(m_ID, fragmentShaderId);
+		// Ensure the VAO "position" attribute stream gets set as the first position
+		// during the link.
+		glBindAttribLocation(m_ID, 0, "in_Position");
+		glBindAttribLocation(m_ID, 1, "in_Color");
+		glBindAttribLocation(m_ID, 2, "in_TexCoord");
+		glBindAttribLocation(m_ID, 3, "in_Normal");
+
+		if (glGetError() != GL_NO_ERROR) {
+			throw std::exception();
+		}
+		// Perform the link and check for failure
+		glLinkProgram(m_ID);
+		glGetProgramiv(m_ID, GL_LINK_STATUS, &success);
+		if (!success)
+		{
+			throw std::exception();
+		}
+		// Detach and destroy the shader objects. These are no longer needed
+		// because we now have a complete shader program.
+		glDetachShader(m_ID, vertexShaderId);
+		glDeleteShader(vertexShaderId);
+		glDetachShader(m_ID, fragmentShaderId);
+		glDeleteShader(fragmentShaderId);
 	}
 
 	//Draw vertex array
@@ -140,8 +221,9 @@ namespace Oz
 	//Draw Mesh
 	void cShaderProgram::Draw(std::shared_ptr<cMesh> _mesh)
 	{
+		glViewport(m_Viewport.x, m_Viewport.y, m_Viewport.z, m_Viewport.w); //Set the viewport
 		glUseProgram(m_ID); //Use the current shader program
-		glBindVertexArray(_mesh->getID());
+		glBindVertexArray(_mesh->m_Model->getID());
 
 		for (size_t i = 0; i < m_TexSampler.size(); i++)
 		{
@@ -167,6 +249,17 @@ namespace Oz
 
 		glBindVertexArray(0);
 		glUseProgram(0);
+	}
+
+	//Draw Mesh and render texture
+	void cShaderProgram::Draw(std::shared_ptr<cRenderTexture> _rendTexture, std::shared_ptr<cMesh> _mesh)
+	{
+		glBindFramebuffer(GL_FRAMEBUFFER, _rendTexture->getFbID());
+		glm::vec4 lastViewport = m_Viewport;
+		m_Viewport = glm::vec4(0, 0, _rendTexture->getSize().x, _rendTexture->getSize().y);
+		Draw(_mesh);
+		m_Viewport = lastViewport;
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	}
 
 	/*Set Uniform overloads */
@@ -248,6 +341,11 @@ namespace Oz
 	GLuint cShaderProgram::getID()
 	{
 		return m_ID;
+	}
+
+	void cShaderProgram::setViewport(glm::vec4 _viewport)
+	{
+		m_Viewport = _viewport; //Set the viewport
 	}
 
 	cShaderProgram::~cShaderProgram()

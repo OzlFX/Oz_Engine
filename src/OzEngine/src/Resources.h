@@ -5,10 +5,8 @@
 #include <list>
 
 #include "Mesh.h"
-#include "RenderSystem/ShaderProgram.h"
 #include "Texture.h"
-#include "Material.h"
-#include "Exception.h"
+//#include "RenderTexture.h"
 
 namespace Oz
 {
@@ -16,6 +14,8 @@ namespace Oz
 
 	class cResources
 	{
+		friend class cCore;
+
 	private:
 
 		std::list<std::shared_ptr<cResource>> m_Resources;
@@ -25,14 +25,25 @@ namespace Oz
 		template <typename T>
 		std::shared_ptr<T> Load(std::string _path)
 		{
-			std::shared_ptr<T> resource = std::make_shared<T>(); //Make a new thingy
+			std::shared_ptr<T> resource; //Make a new resource
 
-			resource->Create(); //Create the resource
-			resource->Load(_path); //Load a resource
-			
+			resource = resource->Create(); //Create the resource
+			resource->Load(_path); //Load a resource		
+
+			m_Resources.push_back(resource); //add new resource to the list
 			return resource;
 		}
 
+		template <typename T>
+		std::shared_ptr<T> Load()
+		{
+			std::shared_ptr<T> resource; //Make a new resource
+
+			resource = resource->Create(); //Create the resource	
+
+			m_Resources.push_back(resource); //add new resource to the list
+			return resource;
+		}
 	};
 }
 
