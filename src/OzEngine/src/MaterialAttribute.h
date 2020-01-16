@@ -18,7 +18,10 @@ namespace Oz
 
 		std::string m_Name;
 		std::shared_ptr<cTexture> m_Texture;
-
+		std::shared_ptr<cTexture> m_Normal;
+		std::shared_ptr<cTexture> m_Roughness;
+		std::shared_ptr<cTexture> m_Metallic;
+		std::shared_ptr<cTexture> m_Disperse;
 	};
 }
 

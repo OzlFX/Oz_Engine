@@ -19,7 +19,8 @@ namespace Oz
 
 		//Vars
 		glm::mat4 m_ViewMatrix, m_Projection;
-		//std::list<std::shared_ptr<cShaderProgram>> m_Shaders;
+		glm::vec3 m_Pos, m_Rotation;
+		std::list<std::shared_ptr<cShaderProgram>> m_Shaders;
 
 	public:
 
@@ -30,6 +31,8 @@ namespace Oz
 		void onBegin(); //On start
 		void onInit(); //Initialise variables when called
 		void onUpdate(); //Udates camera each frame
+
+		std::shared_ptr<cTransform> getTransform();
 
 	};
 }

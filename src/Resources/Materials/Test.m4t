@@ -1,7 +1,11 @@
 #Material
 string Name = Test;
-string Texture src = ../src/Resources/Textures/Whiskers_diffuse.png;
-string Shader src = ../src/Resources/Shaders/MaterialShader.glsl;
+string Texture src = ../src/Resources/Textures/sharprockfree_default_color.png;
+string Normal src = ../src/Resources/Textures/sharprockfree_default_nmap-dx.png;
+string Roughness src = ../src/Resources/Textures/sharprockfree_default_rough.png;
+string Metallic src = ../src/Resources/Textures/sharprockfree_default_metalness.png;
+string Disperse src = ../src/Resources/Textures/sharprockfree_default_ao.png;
+string Shader src = ../src/Resources/Shaders/PBR;
 vec3 Ambient = 1.0 0.5 0.31;
 vec3 Diffuse = 1.0 0.5 0.31;
 vec3 Specular = 0.5 0.5 0.5;

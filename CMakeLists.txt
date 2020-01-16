@@ -48,6 +48,8 @@ add_library(OzEngine
 	src/OzEngine/src/Texture.cpp
 	src/OzEngine/src/RenderTexture.h
 	src/OzEngine/src/RenderTexture.cpp
+	src/OzEngine/src/DepthTexture.h
+	src/OzEngine/src/DepthTexture.cpp
 	src/OzEngine/src/MeshRend.h
 	src/OzEngine/src/MeshRend.cpp
 	src/OzEngine/src/Resource.h
@@ -81,6 +83,7 @@ target_link_libraries(OzEngine SDL2 opengl32 OpenAL32 glew32)
 
 #Add main executable
 add_executable(Game
+	src/Game/src/Program.cpp
 	src/Game/src/main.cpp
 )
 

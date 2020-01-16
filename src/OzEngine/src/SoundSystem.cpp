@@ -1,30 +1,49 @@
 #include "Components/ComponentIncludes.h"
 #include "SoundSystem.h"
 #include "Sound.h"
+#include "Core.h"
 
 namespace Oz
 {
 	void cSoundSystem::Play()
 	{
-		alSource3f(m_SourceID, AL_POSITION, 0.0f, 0.0f, 0.0f);
+		alListener3f(AL_POSITION, 
+			getCore()->getMainCamera()->getTransform()->getPos().x, 
+			getCore()->getMainCamera()->getTransform()->getPos().y, 
+			getCore()->getMainCamera()->getTransform()->getPos().z);
+
+		alSource3f(m_SourceID, AL_POSITION, 
+			getGameObject()->getTransform()->getPos().x, 
+			getGameObject()->getTransform()->getPos().y, 
+			getGameObject()->getTransform()->getPos().z);
+
+		try
+		{
+			if (!m_Sound)
+			{
+				throw Oz::Exception("Sound cannot be played, no sound source exists!");
+			}
+		}
+		catch (Oz::Exception& excp)
+		{
+			std::cout << "Oz Engine Error: " << excp.what() << std::endl;
+			return;
+		}
+
 		alSourcei(m_SourceID, AL_BUFFER, m_Sound->getID());
 		alSourcePlay(m_SourceID);
 	}
 
 	void cSoundSystem::onUpdate()
 	{
-		ALint state = 0;
-		alGetSourcei(m_SourceID, AL_SOURCE_STATE, &state);
-
-		if (state == AL_STOPPED)
+		if (m_PlayState)
 		{
-			//break;
+			Play();
+			m_PlayState = false;
 		}
-
-		//Sleep(1000);
 	}
 
-	void cSoundSystem::setSound(std::shared_ptr<cSound> _sound)
+	void cSoundSystem::onInit(std::shared_ptr<cSound> _sound)
 	{
 		m_Sound = _sound;
 	}

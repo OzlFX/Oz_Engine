@@ -17,7 +17,7 @@ namespace Oz
 	private:
 
 		//Vars
-		GLuint m_ID;
+		
 		bool m_Dirty;
 		int m_Type;
 
@@ -52,6 +52,11 @@ namespace Oz
 		GLuint getID(); //Get the ID
 
 		~cTexture();
+
+	protected:
+
+		GLuint m_ID;
+
 	};
 }
 

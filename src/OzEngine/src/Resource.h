@@ -14,8 +14,8 @@ namespace Oz
 		friend class cMesh;
 		friend class cShaderProgram;
 		friend class cTexture;
-		friend class cRenderTexture;
 		friend class cMaterial;
+		friend class cSound;
 
 	private:
 

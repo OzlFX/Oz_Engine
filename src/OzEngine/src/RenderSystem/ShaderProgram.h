@@ -16,10 +16,12 @@ namespace Oz
 	class cVertexArray;
 	class cMesh;
 	class cRenderTexture;
+	class cDepthTexture;
 
 	struct sTextureSampler
 	{
 		GLint m_ID;
+		int m_Type;
 		std::shared_ptr<cTexture> m_Texture;
 	};
 
@@ -43,6 +45,7 @@ namespace Oz
 		std::shared_ptr<cShaderProgram> Create(); //Create a new shader program
 		void Load(std::string _path); //Load the shader file
 		void Load(std::string _vert, std::string _frag); //Load frag and vert files
+		void Load(std::string _vert, std::string _frag, std::string _geom); //Load frag, vert and geometry files
 
 	public:
 
@@ -52,10 +55,13 @@ namespace Oz
 		void Draw(std::shared_ptr<cRenderTexture> _rendTexture, std::shared_ptr<cMesh> _mesh); //Draw Mesh and render texture
 
 		//Set Uniform overloads
+		void setUniform(const std::string _uniform, glm::vec2 _value);
+		void setUniform(const std::string _uniform, glm::vec3 _value);
 		void setUniform(const std::string _uniform, glm::vec4 _value);
 		void setUniform(const std::string _uniform, float _value);
 		void setUniform(const std::string _uniform, glm::mat4 _value);
 		void setUniform(const std::string _uniform, std::weak_ptr<cTexture> _texture);
+		void setUniform(const std::string _uniform, std::weak_ptr<cDepthTexture> _texture);
 
 		void setViewport(glm::vec4 _viewport);
 

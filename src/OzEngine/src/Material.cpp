@@ -66,9 +66,32 @@ namespace Oz
 				m_MaterialAttrib->m_Texture = std::make_shared<cTexture>();
 				m_MaterialAttrib->m_Texture->Load(splitLine.at(4)); //Set the matterial attribute's texture's path
 			}
+			else if (splitLine.at(1) == "Normal")
+			{
+				m_MaterialAttrib->m_Normal = std::make_shared<cTexture>();
+				m_MaterialAttrib->m_Normal->Load(splitLine.at(4)); //Set the matterial attribute's texture's path
+			}
+			else if (splitLine.at(1) == "Roughness")
+			{
+				m_MaterialAttrib->m_Roughness = std::make_shared<cTexture>();
+				m_MaterialAttrib->m_Roughness->Load(splitLine.at(4)); //Set the matterial attribute's texture's path
+			}
+			else if (splitLine.at(1) == "Metallic")
+			{
+				m_MaterialAttrib->m_Metallic = std::make_shared<cTexture>();
+				m_MaterialAttrib->m_Metallic->Load(splitLine.at(4)); //Set the matterial attribute's texture's path
+			}
+			else if (splitLine.at(1) == "Disperse")
+			{
+				m_MaterialAttrib->m_Disperse = std::make_shared<cTexture>();
+				m_MaterialAttrib->m_Disperse->Load(splitLine.at(4)); //Set the matterial attribute's texture's path
+			}
 			else if (splitLine.at(1) == "Shader")
 			{
-				m_ShaderFile = splitLine.at(4);
+				m_ShaderFile1 = splitLine.at(4) + ".vert";
+				m_Files.push_back(m_ShaderFile1);
+				m_ShaderFile2 = splitLine.at(4) + ".frag";
+				m_Files.push_back(m_ShaderFile2);
 			}
 			else if (splitLine.at(1) == "Ambient")
 			{
@@ -97,11 +120,6 @@ namespace Oz
 			}
 		}
 
-		//Setup the render texture
-		m_RendTexture = m_RendTexture->Create();
-		m_RendTexture->setSize(m_MaterialAttrib->m_Texture->getSize().x, 
-			m_MaterialAttrib->m_Texture->getSize().y);
-
 		return m_Self.lock();
 	}
 
@@ -111,19 +129,34 @@ namespace Oz
 		m_Shader->setUniform(_name, _value);
 	}*/
 
-	std::shared_ptr<cRenderTexture> cMaterial::getRendTexture()
-	{
-		return m_RendTexture;
-	}
-
 	std::shared_ptr<cTexture> cMaterial::getTexture()
 	{
 		return m_MaterialAttrib->m_Texture;
 	}
 
-	std::string cMaterial::getShader()
+	std::shared_ptr<cTexture> cMaterial::getNormal()
 	{
-		return m_ShaderFile;
+		return m_MaterialAttrib->m_Normal;
+	}
+
+	std::shared_ptr<cTexture> cMaterial::getDisperse()
+	{
+		return m_MaterialAttrib->m_Disperse;
+	}
+
+	std::shared_ptr<cTexture> cMaterial::getRoughness()
+	{
+		return m_MaterialAttrib->m_Roughness;
+	}
+
+	std::shared_ptr<cTexture> cMaterial::getMetallic()
+	{
+		return m_MaterialAttrib->m_Metallic;
+	}
+
+	std::vector<std::string> cMaterial::getShader()
+	{
+		return m_Files;
 	}
 
 	cMaterial::~cMaterial()

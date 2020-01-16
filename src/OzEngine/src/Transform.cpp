@@ -1,52 +1,69 @@
 #include "Components/ComponentIncludes.h"
 #include <glm/gtc/matrix_transform.hpp>
+#include <cmath>
 
 namespace Oz
 {
-	void cTransform::onInit()
-	{
-		m_Pos = glm::vec3(0.0f, 0.0f, 0.0f);
-		m_Scale = glm::vec3(1.0f, 1.0f, 1.0f);
-		m_Rotation = glm::vec3(0.0f, 0.0f, 0.0f);
-	}
-
 	//Initialize transforms
-	void cTransform::onInit(glm::vec3 _pos, glm::vec3 _scale, glm::vec3 _rotation)
+	void cTransform::onInit(glm::vec3 _pos, glm::vec3 _rotation, glm::vec3 _scale)
 	{
 		m_Pos = _pos;
 		m_Scale = _scale;
 		m_Rotation = _rotation;
 	}
 
-	//Update Transforms
-	void cTransform::onUpdate(glm::vec3 _pos, glm::vec3 _scale, glm::vec3 _rotation)
+	glm::vec3 cTransform::getForward()
 	{
-		m_Pos += _pos;
-		m_Scale += _scale;
-		m_Rotation += _rotation;
+		glm::mat4 t(1.0f);
+
+		t = glm::translate(t, glm::vec3(0, 0, 1));
+		m_Forward = t * glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+		m_Forward = glm::normalize(m_Forward);
+		t = glm::mat4(1.0f);
+		t = glm::translate(t, glm::vec3(1, 0, 0));
+
+		return m_Forward;
+	}
+
+	glm::vec3 cTransform::getRight()
+	{
+		glm::mat4 t(1.0f);
+
+		float currentrot = m_Rotation.y;
+		t = glm::rotate(t, glm::radians(currentrot), glm::vec3(0, 1, 0));
+		t = glm::mat4(1.0f);
+		t = glm::rotate(t, glm::radians(currentrot), glm::vec3(0, 1, 0));
+		m_Right = t * glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+		m_Right = -glm::normalize(m_Right);
+
+		return m_Right;
 	}
 
 	//Look at object
 	void cTransform::lookAt(std::weak_ptr<cGameObject> _object)
 	{
-		glm::vec3 dirToObject;
-
-		glm::vec3 startPos = getGameObject()->getComponent<cTransform>()->getPos();
-		glm::vec3 destPos = _object.lock()->getComponent<cTransform>()->getPos();
-
-		dirToObject.x = startPos.x - destPos.x;
-		dirToObject.y = startPos.y - destPos.y;
-		dirToObject.z = startPos.z - destPos.z;
-
-		glm::vec3 rotObject;
-
-		if (startPos.y == destPos.y)
+		if (getGameObject()->getComponent<cCamera>())
 		{
-			//rotObject = sin(startPos, destPos);
+			glm::lookAt(getGameObject()->getComponent<cCamera>()->getTransform()->getPos(), _object.lock()->getTransform()->getPos(), glm::vec3(0.0f, 1.0f, 0.0f));
 		}
+		else
+		{
+			glm::vec3 distance = getGameObject()->getTransform()->getPos() - _object.lock()->getTransform()->getPos();
+			glm::vec3 newRot;
+			newRot.x = sin(getGameObject()->getTransform()->getRotation().y);
+			newRot.y = sin(getGameObject()->getTransform()->getRotation().x);
+			newRot.z = cos(getGameObject()->getTransform()->getRotation().y);
 
-		//Set the rotation of the object towards the destination
-		getGameObject()->getComponent<cTransform>()->getRotation() = rotObject;
+			glm::vec3 dirA = newRot;
+			glm::vec3 dirB = glm::normalize(distance);
+
+			float rotAngle = (float)acos(glm::dot(dirA, dirB));
+			glm::vec3 rotAxis = glm::cross(dirA, dirB);
+			rotAxis = glm::normalize(rotAxis);
+
+			glm::vec3 temp = getGameObject()->getTransform()->getRotation();
+			getGameObject()->getTransform()->setRotation(temp + (rotAngle * rotAxis.y));
+		}
 	}
 
 	//Look at object with a certain rotation

@@ -4,6 +4,7 @@
 #include "OzEngine/src/Mesh.h"
 #include "OzEngine/src/Exception.h"
 #include "OzEngine/src/Texture.h"
+#include "OzEngine/src/DepthTexture.h"
 #include "OzEngine/src/RenderTexture.h"
 
 #include <glm/ext.hpp>
@@ -206,6 +207,116 @@ namespace Oz
 		glDeleteShader(fragmentShaderId);
 	}
 
+	void cShaderProgram::Load(std::string _vert, std::string _frag, std::string _geom)
+	{
+		std::string vertShader;
+		std::string fragShader;
+		std::string geomShader;
+
+		std::ifstream file(_vert);
+
+		if (!file.is_open()) {
+			throw std::exception();
+		}
+		else {
+			while (!file.eof()) {
+				std::string line;
+				std::getline(file, line);
+				vertShader += line + "\n";
+			}
+		}
+		file.close();
+
+		file.open(_frag);
+
+		if (!file.is_open()) {
+			throw std::exception();
+		}
+		else {
+			while (!file.eof()) {
+				std::string line;
+				std::getline(file, line);
+				fragShader += line + "\n";
+			}
+		}
+		file.close();
+
+		file.open(_geom);
+		if (!file.is_open()) {
+			throw std::exception();
+		}
+		else {
+			while (!file.eof()) {
+				std::string line;
+				std::getline(file, line);
+				geomShader += line + "\n";
+			}
+		}
+		file.close();
+
+		const char *vertex = vertShader.c_str();
+		const char *fragment = fragShader.c_str();
+		const char *geometry = geomShader.c_str();
+
+		GLuint vertexShaderId = glCreateShader(GL_VERTEX_SHADER);
+		glShaderSource(vertexShaderId, 1, &vertex, NULL);
+		glCompileShader(vertexShaderId);
+		GLint success = 0;
+		glGetShaderiv(vertexShaderId, GL_COMPILE_STATUS, &success);
+		if (!success)
+		{
+			throw std::exception();
+		}
+
+		GLuint fragmentShaderId = glCreateShader(GL_FRAGMENT_SHADER);
+		glShaderSource(fragmentShaderId, 1, &fragment, NULL);
+		glCompileShader(fragmentShaderId);
+		glGetShaderiv(fragmentShaderId, GL_COMPILE_STATUS, &success);
+		if (!success)
+		{
+			throw std::exception();
+		}
+
+		GLuint geometryShaderId = glCreateShader(GL_GEOMETRY_SHADER);
+		glShaderSource(geometryShaderId, 1, &geometry, NULL);
+		glCompileShader(geometryShaderId);
+		glGetShaderiv(geometryShaderId, GL_COMPILE_STATUS, &success);
+		if (!success)
+		{
+			throw std::exception();
+		}
+
+		m_ID = glCreateProgram();
+		glAttachShader(m_ID, vertexShaderId);
+		glAttachShader(m_ID, fragmentShaderId);
+		glAttachShader(m_ID, geometryShaderId);
+		// Ensure the VAO "position" attribute stream gets set as the first position
+		// during the link.
+		glBindAttribLocation(m_ID, 0, "in_Position");
+		glBindAttribLocation(m_ID, 1, "in_Color");
+		glBindAttribLocation(m_ID, 2, "in_TexCoord");
+		glBindAttribLocation(m_ID, 3, "in_Normal");
+
+		if (glGetError() != GL_NO_ERROR) {
+			throw std::exception();
+		}
+		// Perform the link and check for failure
+		glLinkProgram(m_ID);
+		glGetProgramiv(m_ID, GL_LINK_STATUS, &success);
+		if (!success)
+		{
+			throw std::exception();
+		}
+		// Detach and destroy the shader objects. These are no longer needed
+		// because we now have a complete shader program.
+		glDetachShader(m_ID, vertexShaderId);
+		glDeleteShader(vertexShaderId);
+		glDetachShader(m_ID, fragmentShaderId);
+		glDeleteShader(fragmentShaderId);
+		glDetachShader(m_ID, geometryShaderId);
+		glDeleteShader(geometryShaderId);
+	}
+
 	//Draw vertex array
 	void cShaderProgram::Draw(std::weak_ptr<cVertexArray> _vertArray)
 	{
@@ -221,7 +332,6 @@ namespace Oz
 	//Draw Mesh
 	void cShaderProgram::Draw(std::shared_ptr<cMesh> _mesh)
 	{
-		glViewport(m_Viewport.x, m_Viewport.y, m_Viewport.z, m_Viewport.w); //Set the viewport
 		glUseProgram(m_ID); //Use the current shader program
 		glBindVertexArray(_mesh->m_Model->getID());
 
@@ -263,6 +373,34 @@ namespace Oz
 	}
 
 	/*Set Uniform overloads */
+
+	void cShaderProgram::setUniform(const std::string _uniform, glm::vec2 _value)
+	{
+		GLint uniformId = glGetUniformLocation(m_ID, _uniform.c_str());
+
+		if (uniformId == -1)
+		{
+			throw std::exception();
+		}
+
+		glUseProgram(m_ID);
+		glUniform2f(uniformId, _value.x, _value.y);
+		glUseProgram(0);
+	}
+
+	void cShaderProgram::setUniform(const std::string _uniform, glm::vec3 _value)
+	{
+		GLint uniformId = glGetUniformLocation(m_ID, _uniform.c_str());
+
+		if (uniformId == -1)
+		{
+			throw std::exception();
+		}
+
+		glUseProgram(m_ID);
+		glUniform3f(uniformId, _value.x, _value.y, _value.z);
+		glUseProgram(0);
+	}
 
 	void cShaderProgram::setUniform(const std::string _uniform, glm::vec4 _value)
 	{
@@ -330,6 +468,40 @@ namespace Oz
 
 		sTextureSampler texSampler;
 		texSampler.m_ID = uniformId;
+		texSampler.m_Type = GL_TEXTURE_2D;
+		texSampler.m_Texture = _texture.lock();
+		m_TexSampler.push_back(texSampler);
+
+		glUseProgram(m_ID);
+		glUniform1i(uniformId, m_TexSampler.size() - 1);
+		glUseProgram(0);
+	}
+
+	void cShaderProgram::setUniform(const std::string _uniform, std::weak_ptr<cDepthTexture> _texture)
+	{
+		GLint uniformId = glGetUniformLocation(m_ID, _uniform.c_str());
+
+		if (uniformId == -1)
+		{
+			return;
+		}
+
+		for (size_t i = 0; i < m_TexSampler.size(); i++)
+		{
+			if (m_TexSampler.at(i).m_ID == uniformId)
+			{
+				m_TexSampler.at(i).m_Texture = _texture.lock();
+
+				glUseProgram(m_ID);
+				glUniform1i(uniformId, i);
+				glUseProgram(0);
+				return;
+			}
+		}
+
+		sTextureSampler texSampler;
+		texSampler.m_ID = uniformId;
+		texSampler.m_Type = GL_TEXTURE_CUBE_MAP;
 		texSampler.m_Texture = _texture.lock();
 		m_TexSampler.push_back(texSampler);
 

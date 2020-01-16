@@ -41,6 +41,11 @@ namespace Oz
 		}
 	}
 
+	std::list<std::shared_ptr<cComponent>> cGameObject::getComponents()
+	{
+		return m_Components;
+	}
+
 	//Get the transform
 	std::shared_ptr<cTransform> cGameObject::getTransform()
 	{

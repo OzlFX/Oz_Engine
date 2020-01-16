@@ -18,12 +18,13 @@ namespace Oz
 
 		ALuint m_SourceID;
 		std::shared_ptr<cSound> m_Sound;
+		bool m_PlayState;
 
 	public:
 
+		void onInit(std::shared_ptr<cSound> _sound);
 		void Play();
 		void onUpdate();
-		void setSound(std::shared_ptr<cSound> _sound);
 
 	};
 }

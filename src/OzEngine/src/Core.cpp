@@ -1,5 +1,4 @@
 #include "OzEngine.h"
-#include <fstream>
 
 namespace Oz
 {
@@ -50,11 +49,19 @@ namespace Oz
 		//Init Context
 		core->m_Context = cContext::Init();
 
+		core->m_InputHandler = std::make_shared<cInputHandler>();
+		core->m_Time = std::make_shared<cEnvironment>();
+
 		core->m_Resources = std::make_shared<cResources>();
 
 		core->m_ModelShader = core->loadShader("../src/Resources/Shaders/ModelShader.glsl");
 
 		return core;
+	}
+
+	std::shared_ptr<cInputHandler> cCore::getInputHandler()
+	{
+		return m_InputHandler;
 	}
 
 	std::shared_ptr<cShaderProgram> cCore::loadShader(std::string _path)
@@ -75,6 +82,42 @@ namespace Oz
 		return shader;
 	}
 
+	std::shared_ptr<cShaderProgram> cCore::loadShader(std::string _vert, std::string _frag, std::string _geom)
+	{
+		std::shared_ptr<cShaderProgram> shader = shader->Create(); //Create the resource
+		shader->Load(_vert, _frag, _geom); //Load a resource		
+
+		m_Shaders.push_back(shader); //add new resource to the list
+		return shader;
+	}
+
+	std::shared_ptr<cShaderProgram> cCore::loadPostShader(std::string _path)
+	{
+		std::shared_ptr<cShaderProgram> shader = shader->Create(); //Create the resource
+		shader->Load(_path); //Load a resource		
+
+		m_PostShaders.push_back(shader); //add new resource to the list
+		return shader;
+	}
+
+	std::shared_ptr<cShaderProgram> cCore::loadPostShader(std::string _vert, std::string _frag)
+	{
+		std::shared_ptr<cShaderProgram> shader = shader->Create(); //Create the resource
+		shader->Load(_vert, _frag); //Load a resource		
+
+		m_PostShaders.push_back(shader); //add new resource to the list
+		return shader;
+	}
+
+	std::shared_ptr<cShaderProgram> cCore::loadPostShader(std::string _vert, std::string _frag, std::string _geom)
+	{
+		std::shared_ptr<cShaderProgram> shader = shader->Create(); //Create the resource
+		shader->Load(_vert, _frag, _geom); //Load a resource		
+
+		m_PostShaders.push_back(shader); //add new resource to the list
+		return shader;
+	}
+
 	//Main Run function
 	void cCore::Run()
 	{
@@ -82,30 +125,34 @@ namespace Oz
 
 		while (m_Running)
 		{
-			SDL_Event m_Event = { 0 };
+			m_Time->calcFrames();
 
-			while (SDL_PollEvent(&m_Event))
-			{
-				if (m_Event.type == SDL_QUIT)
-				{
-					Close();
-				}
-			}
+			m_InputHandler->Update();
+			m_Running = !m_InputHandler->quitCommand();
 
 			SDL_GetWindowSize(m_Window, &m_WinWidth, &m_WinHeight);
+			
+			if (m_InputHandler->getMouseBind()) SDL_WarpMouseInWindow(m_Window, m_WinWidth / 2, m_WinHeight / 2);
+
+			glEnable(GL_CULL_FACE);
+			glEnable(GL_DEPTH_TEST);
+
+			glViewport(0, 0, m_WinWidth, m_WinHeight);
 
 			//Clear gl
-			glClearColor(0.03f, 0.03f, 0.03f, 0.6f);
+			glClearColor(0.03f, 0.03f, 0.03f, 1.0f);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+			for (std::list<std::shared_ptr<cShaderProgram>>::iterator it = m_Shaders.begin(); it != m_Shaders.end(); it++)
+			{
+				(*it)->setUniform("in_Projection", glm::perspective(glm::radians(45.0f), (float)m_WinWidth / (float)m_WinHeight, 0.1f, 100.0f));
+			}
 
 			//Update all objects in the list
 			for (std::list<std::shared_ptr<cGameObject>>::iterator it = m_GameObjects.begin(); it != m_GameObjects.end(); it++)
 			{
 				(*it)->Update();
 			}
-
-			glEnable(GL_CULL_FACE);
-			glEnable(GL_DEPTH_TEST);
 
 			//Display all objects in the list
 			for (std::list<std::shared_ptr<cGameObject>>::iterator it = m_GameObjects.begin(); it != m_GameObjects.end(); it++)
@@ -117,6 +164,8 @@ namespace Oz
 			glDisable(GL_DEPTH_TEST);
 
 			SDL_GL_SwapWindow(m_Window);
+
+			m_Time->capFPS(144.0f);
 		}
 	}
 
@@ -137,6 +186,23 @@ namespace Oz
 		return m_GameObject;
 	}
 
+	std::shared_ptr<cGameObject> cCore::addLight(glm::vec3 _pos, glm::vec3 _rotation, glm::vec3 _scale, glm::vec3 _colour, float _intensity)
+	{
+		std::shared_ptr<cGameObject> m_Light = std::make_shared<cGameObject>(); //Make new light
+		m_Light->m_Self = m_Light;
+		m_Light->m_Core = m_Self;
+		m_Light->addComponent<cTransform>(_pos, _rotation, _scale);
+		m_Light->addComponent<cLight>(_colour, _intensity); //Set the light's values;
+
+		m_Lights.push_back(m_Light);
+		return m_Light;
+	}
+
+	std::list<std::shared_ptr<cGameObject>> cCore::getLights()
+	{
+		return m_Lights;
+	}
+
 	//Get resource
 	std::shared_ptr<cResources> cCore::getResource()
 	{
@@ -151,56 +217,6 @@ namespace Oz
 	std::shared_ptr<cCamera> cCore::getMainCamera()
 	{
 		return m_MainCamera;
-	}
-
-	void cCore::createMaterial(std::string _name, std::string _texture, std::string _shader,
-		glm::vec3 _ambient, glm::vec3 _diffuse, glm::vec3 _specular, float _shininess)
-	{
-		std::string ambient = std::to_string(_ambient.x) + " " + std::to_string(_ambient.y) + " " + std::to_string(_ambient.z);
-		std::string diffuse = std::to_string(_diffuse.x) + " " + std::to_string(_diffuse.y) + " " + std::to_string(_diffuse.z);
-		std::string specular = std::to_string(_specular.x) + " " + std::to_string(_specular.y) + " " + std::to_string(_specular.z);
-		std::string shininess = std::to_string(_shininess);
-
-		std::ofstream file("../src/Resources/Materials/" + _name + ".m4t", std::ios::out);
-		file << "#Material" <<
-			std::endl <<
-			"string Name = " + _name 
-			+ ";" <<
-			std::endl <<
-			"string Texture src = "
-			+ _texture 
-			+ ";" <<
-			std::endl <<
-			"string Shader src = "
-			+ _shader 
-			+ ";" <<
-			std::endl <<
-			"vec3 Ambient = "
-			+ ambient 
-			+ ";" <<
-			std::endl <<
-			"vec3 Diffuse = "
-			+ diffuse 
-			+ ";" <<
-			std::endl <<
-			"vec3 Specular = "
-			+ specular 
-			+ ";" <<
-			std::endl <<
-			"vec3 Shininess = "
-			+ shininess
-			+ ";";
-		file.close();
-	}
-
-	//Add material
-	std::shared_ptr<cMaterial> cCore::addMaterial(std::string _path)
-	{
-		std::shared_ptr<cMaterial> m_Material = m_Material->Create();
-		m_Material->Load(_path);
-		m_Materials.push_back(m_Material);
-
-		return m_Material;
 	}
 
 	/*std::shared_ptr<cShaderProgram> cCore::getShader(const std::shared_ptr<cShaderProgram> _shader)
@@ -226,11 +242,6 @@ namespace Oz
 	std::list<std::shared_ptr<cShaderProgram>> cCore::getShaders() const
 	{
 		return m_Shaders;
-	}
-
-	void cCore::addShader(std::shared_ptr<cShaderProgram> _shader)
-	{
-		m_Shaders.push_back(_shader); //Add new shader to render from
 	}
 
 	void cCore::removeShader(std::shared_ptr<cShaderProgram> _shader)

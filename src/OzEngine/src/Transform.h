@@ -6,6 +6,7 @@
 #include "Exception.h"
 
 #include <glm/glm.hpp>
+#include <list>
 
 namespace Oz
 {
@@ -19,25 +20,26 @@ namespace Oz
 		glm::vec3 m_Scale;
 		glm::vec3 m_Rotation;
 
+		glm::vec3 m_Forward;
+		glm::vec3 m_Right;
+
+		std::list<std::shared_ptr<cGameObject>> m_Children;
+
+		std::shared_ptr<cGameObject> m_Parent;
+		std::shared_ptr<cGameObject> m_Child;
+
 	public:
 
-		//cTransform(glm::vec3 _pos, glm::vec3 _scale, glm::vec3 _rotation);
-
 		//Setters
-		void setPos(glm::vec3 _pos);
-		void setScale(glm::vec3 _scale);
-		void setRotation(glm::vec3 _rotation);
+		void setPos(glm::vec3 _pos); //Set the position of the object
+		void setScale(glm::vec3 _scale); //Set the scale of the object
+		void setRotation(glm::vec3 _rotation); //Set the rotation of the object
 
-		void onInit();
-		void onInit(glm::vec3 _pos, glm::vec3 _scale, glm::vec3 _rotation);
-		void onUpdate(glm::vec3 _pos, glm::vec3 _scale, glm::vec3 _rotation);
+		void onInit(glm::vec3 _pos, glm::vec3 _rotation, glm::vec3 _scale); //Initialise the object's postion, rotation and scale
 
-		//Look at object
-		void lookAt(std::weak_ptr<cGameObject> _object);
+		void lookAt(std::weak_ptr<cGameObject> _object); //Look at object
 
-		//Look at object with a certain rotation
-
-		void lookAt(std::weak_ptr<cGameObject> _object, glm::vec3 _rotation);
+		void lookAt(std::weak_ptr<cGameObject> _object, glm::vec3 _rotation); //Look at object with a certain rotation
 
 		void lookAt(glm::vec3 _worldPos); //Look at position in the world
 		void lookAt(glm::vec3 _worldPos, glm::vec3 _rotation); //Look at position in the world with specific rotation
@@ -48,14 +50,17 @@ namespace Oz
 		void Translate(float _x, float _y, float _z, std::weak_ptr<cTransform> _relativeTo); //Float Translation relative to another object's Transform
 
 		//Getters
-		glm::vec3 getPos();
-		glm::vec3 getScale();
-		glm::vec3 getRotation();
+		glm::vec3 getPos(); //Get the object's position
+		glm::vec3 getScale(); //Get the object's scale
+		glm::vec3 getRotation(); //Get the object's rotation
 
-		glm::mat4 getModel();
+		glm::vec3 getForward(); //Calculate the object's forward vector and return it
+		glm::vec3 getRight(); //Calculate the object's right vector and return it
+
+		glm::mat4 getModel(); //Calculate the object's model matrix and return it
 
 		~cTransform();
 	};
 }
 
-#endif // !_TRANSFORM_H_
+#endif

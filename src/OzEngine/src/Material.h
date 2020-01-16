@@ -5,13 +5,13 @@
 
 #include <memory>
 #include <list>
+#include <vector>
 #include <string>
 
 #include "Resource.h"
 
 namespace Oz
 {
-	class cShaderProgram;
 	class cMaterialAttribute;
 	class cTexture;
 	class cRenderTexture;
@@ -28,10 +28,11 @@ namespace Oz
 		glm::vec3 m_Ambient, m_Diffuse, m_Specular;
 		float m_Shininess;
 
-		std::string m_ShaderFile;
-		std::weak_ptr<cMaterial> m_Self;
+		std::string m_ShaderFile1;
+		std::string m_ShaderFile2;
+		std::vector<std::string> m_Files;
 
-		std::shared_ptr<cRenderTexture> m_RendTexture;
+		std::weak_ptr<cMaterial> m_Self;
 
 		std::shared_ptr<cMaterialAttribute> m_MaterialAttrib;
 
@@ -41,10 +42,12 @@ namespace Oz
 		std::shared_ptr<cMaterial> Load(std::string& _path);
 
 		//void setValue(std::string _name, float _value); //Set the value with a float
-
-		std::shared_ptr<cRenderTexture> getRendTexture(); //Get the render texture
 		std::shared_ptr<cTexture> getTexture(); //Get the texture
-		std::string getShader(); //Get the shader
+		std::shared_ptr<cTexture> getNormal(); //Get the normal texture
+		std::shared_ptr<cTexture> getDisperse(); //Get the AO/disperse texture
+		std::shared_ptr<cTexture> getRoughness(); //Get the roughness texture
+		std::shared_ptr<cTexture> getMetallic(); //Get the metallic texture
+		std::vector<std::string> getShader(); //Get the shader
 
 		~cMaterial();
 	};

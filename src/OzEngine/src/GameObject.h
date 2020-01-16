@@ -22,7 +22,6 @@ namespace Oz
 		//Vars
 		std::weak_ptr<cGameObject> m_Self;
 		std::weak_ptr<cCore> m_Core;
-		std::weak_ptr<cTransform> m_Transform;
 
 		std::list<std::shared_ptr<cComponent>> m_Components;
 
@@ -91,6 +90,8 @@ namespace Oz
 
 			throw Oz::Exception("Added component isnt of type Component!"); //Throw engine exception if the added component isnt of the type component
 		}
+
+		std::list<std::shared_ptr<cComponent>> getComponents();
 
 		std::shared_ptr<cTransform> getTransform(); //Get the object transform
 
