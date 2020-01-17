@@ -12,6 +12,7 @@ namespace Oz
 {
 	class cVertexArray;
 
+	/* Front end mesh to the model loader and data handler, easier to manage */
 	class cMesh : private cNonCopyable, public cResource
 	{
 		friend class cResources;

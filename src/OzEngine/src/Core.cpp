@@ -127,7 +127,7 @@ namespace Oz
 		{
 			m_Time->calcFrames();
 
-			m_InputHandler->Update();
+			m_InputHandler->Update(&m_Event);
 			m_Running = !m_InputHandler->quitCommand();
 
 			SDL_GetWindowSize(m_Window, &m_WinWidth, &m_WinHeight);
@@ -196,6 +196,11 @@ namespace Oz
 
 		m_Lights.push_back(m_Light);
 		return m_Light;
+	}
+
+	std::list<std::shared_ptr<cGameObject>> cCore::getGameObjects()
+	{
+		return m_GameObjects;
 	}
 
 	std::list<std::shared_ptr<cGameObject>> cCore::getLights()

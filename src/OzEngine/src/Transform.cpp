@@ -1,4 +1,5 @@
 #include "Components/ComponentIncludes.h"
+#include "Camera.h"
 #include <glm/gtc/matrix_transform.hpp>
 #include <cmath>
 
@@ -16,11 +17,14 @@ namespace Oz
 	{
 		glm::mat4 t(1.0f);
 
+		t = glm::rotate(t, glm::radians(m_Rotation.x), glm::vec3(1, 0, 0));
+		t = glm::rotate(t, glm::radians(m_Rotation.y), glm::vec3(0, 1, 0));
+		t = glm::rotate(t, glm::radians(m_Rotation.z), glm::vec3(0, 0, 1));
 		t = glm::translate(t, glm::vec3(0, 0, 1));
+
 		m_Forward = t * glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
-		m_Forward = glm::normalize(m_Forward);
-		t = glm::mat4(1.0f);
-		t = glm::translate(t, glm::vec3(1, 0, 0));
+
+		m_Forward = -glm::normalize(m_Forward);
 
 		return m_Forward;
 	}
@@ -30,11 +34,16 @@ namespace Oz
 		glm::mat4 t(1.0f);
 
 		float currentrot = m_Rotation.y;
-		t = glm::rotate(t, glm::radians(currentrot), glm::vec3(0, 1, 0));
-		t = glm::mat4(1.0f);
-		t = glm::rotate(t, glm::radians(currentrot), glm::vec3(0, 1, 0));
+
+		t = glm::rotate(t, glm::radians(m_Rotation.x), glm::vec3(1, 0, 0));
+		t = glm::rotate(t, glm::radians(m_Rotation.y), glm::vec3(0, 1, 0));
+		t = glm::rotate(t, glm::radians(m_Rotation.z), glm::vec3(0, 0, 1));
+
+		t = glm::translate(t, glm::vec3(1, 0, 0));
+
 		m_Right = t * glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
-		m_Right = -glm::normalize(m_Right);
+
+		m_Right = glm::normalize(m_Right);
 
 		return m_Right;
 	}
@@ -123,6 +132,11 @@ namespace Oz
 	void cTransform::setRotation(glm::vec3 _rotation)
 	{
 		m_Rotation = _rotation;
+	}
+
+	void cTransform::setForward(glm::vec3 _forward)
+	{
+		m_Forward = _forward;
 	}
 
 	//Get Pos

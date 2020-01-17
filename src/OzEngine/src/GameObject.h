@@ -11,7 +11,10 @@ namespace Oz
 {
 	class cCore;
 	class cTransform;
+	class cLight;
+	class cBoxCollider;
 
+	/* GameObject, contains the components for use within the engine */
 	class cGameObject
 	{
 		friend class cComponent;

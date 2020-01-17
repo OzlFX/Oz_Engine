@@ -25,6 +25,7 @@ namespace Oz
 
 	public:
 
+		//Load a resource with a single string to the engine
 		template <typename T>
 		std::shared_ptr<T> Load(std::string _path)
 		{
@@ -45,6 +46,7 @@ namespace Oz
 			return resource;
 		}
 
+		//Load a resource without a string to the engine
 		template <typename T>
 		std::shared_ptr<T> Load()
 		{
@@ -63,8 +65,11 @@ namespace Oz
 			return resource;
 		}
 
-		void createMaterial(std::string _name, std::string _texture, std::string _shader,
-			glm::vec3 _ambient, glm::vec3 _diffuse, glm::vec3 _specular, float _shininess)
+		/* Create a custom material file to use in the engine. Requires: Name, texture, normal, roughness, metallic,
+		/* AO map, shader, ambient, diffuse, specular and shininess properties */
+		void createMaterial(std::string _name, 
+			std::string _texture, std::string _normal, std::string _roughness, std::string _metallic, std::string _AO,
+			std::string _shader, glm::vec3 _ambient, glm::vec3 _diffuse, glm::vec3 _specular, float _shininess)
 		{
 			std::string ambient = std::to_string(_ambient.x) + " " + std::to_string(_ambient.y) + " " + std::to_string(_ambient.z);
 			std::string diffuse = std::to_string(_diffuse.x) + " " + std::to_string(_diffuse.y) + " " + std::to_string(_diffuse.z);
@@ -82,6 +87,22 @@ namespace Oz
 					std::endl <<
 					"string Texture src = "
 					+ _texture
+					+ ";" <<
+					std::endl <<
+					"string Normal src = "
+					+ _normal
+					+ ";" <<
+					std::endl <<
+					"string Roughness src = "
+					+ _roughness
+					+ ";" <<
+					std::endl <<
+					"string Metallic src = "
+					+ _metallic
+					+ ";" <<
+					std::endl <<
+					"string Disperse src = "
+					+ _AO
 					+ ";" <<
 					std::endl <<
 					"string Shader src = "

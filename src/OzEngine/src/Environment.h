@@ -5,6 +5,7 @@
 
 namespace Oz
 {
+	/* Handles and controls the time flow and FPS of the program */
 	class cEnvironment
 	{
 	private:

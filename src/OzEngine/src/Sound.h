@@ -10,6 +10,7 @@
 
 namespace Oz
 {
+	/* Sound resourse that holds a sound file for usage */
 	class cSound : private cNonCopyable, public cResource
 	{
 		friend class cResources;

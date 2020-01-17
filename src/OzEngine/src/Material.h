@@ -16,8 +16,7 @@ namespace Oz
 	class cTexture;
 	class cRenderTexture;
 
-	/*  */
-
+	/* Material for PBR usage within the engine, handles texture and custom file loading */
 	class cMaterial : private cNonCopyable, public cResource
 	{
 		friend class cResources;

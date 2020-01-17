@@ -27,43 +27,37 @@ cProgram::cProgram()
 	/* std::shared_ptr<Oz::cGameObject> object = Program->addGameObject();
 	/* std::shared_ptr<Oz::[ComponentType]> componentname = object->addComponent<Oz::[ComponentType]>; */
 
-	std::shared_ptr<Oz::cTransform> wtr = world->addComponent<Oz::cTransform>(glm::vec3(0.0f, -14.1f, -40.0f), glm::vec3(-90.0f, 0.0f, 20.0f), glm::vec3(50.0f));
-	std::shared_ptr<Oz::cTransform> tr = gameObject->addComponent<Oz::cTransform>(glm::vec3(0.0f, -8.2f, -40.0f), glm::vec3(0.0f, 90.0f, 0.0f), glm::vec3(1.0f));
+	std::shared_ptr<Oz::cTransform> wtr = world->addComponent<Oz::cTransform>(glm::vec3(2.0f, -2.0f, -16.0f), glm::vec3(0.0f, 90.0f, 0.0f), glm::vec3(1.0f));
+	std::shared_ptr<Oz::cTransform> tr = gameObject->addComponent<Oz::cTransform>(glm::vec3(0.0f, -2.1f, -20.0f), glm::vec3(0.0f, 90.0f, 0.0f), glm::vec3(1.0f));
 
 	std::shared_ptr<Oz::cTransform> Ptr = player->addComponent<Oz::cTransform>(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f));
 	std::shared_ptr<Oz::cCamera> camera = player->addComponent<Oz::cCamera>();
-	std::shared_ptr<Oz::cPlayerController> PC = player->addComponent<Oz::cPlayerController>(0.3f, true);
-	std::shared_ptr<Oz::cBoxCollider> collider = player->addComponent<Oz::cBoxCollider>(glm::vec3(1.0f));
+	std::shared_ptr<Oz::cPlayerController> PC = player->addComponent<Oz::cPlayerController>(0.5f, true);
+	std::shared_ptr<Oz::cSoundSystem> SS = gameObject->addComponent<Oz::cSoundSystem>(m_Program->getResource()->Load<Oz::cSound>("../src/Resources/Sounds/dixie_horn.ogg"));
+	SS->setPlayState(true);
+	//std::shared_ptr<Oz::cBoxCollider> collider = player->addComponent<Oz::cBoxCollider>(glm::vec3(1.0f), glm::vec3(0.0f));
 
 	m_Program->setMainCamera(camera);
 	//gameObject->getComponent<Oz::cTransform>()->lookAt(glm::vec3 (2.0f, 0.0f, 1.0f));
 
 	std::shared_ptr<Oz::cMeshRenderer> wmr = world->addComponent<Oz::cMeshRenderer>();
 	std::shared_ptr<Oz::cMeshRenderer> mr = gameObject->addComponent<Oz::cMeshRenderer>();
-	std::shared_ptr<Oz::cBoxCollider> GOcollider = gameObject->addComponent<Oz::cBoxCollider>(glm::vec3(1.0f));
+	//std::shared_ptr<Oz::cBoxCollider> GOcollider = gameObject->addComponent<Oz::cBoxCollider>(glm::vec3(1.0f), glm::vec3(0.0f));
 	//std::shared_ptr<Oz::cMeshRenderer> hehe = player->addComponent<Oz::cMeshRenderer>();
 
 	std::shared_ptr<Oz::cMesh> worldMesh = m_Program->getResource()->Load<Oz::cMesh>("../src/Resources/Models/re_hall_baked.obj"); //Load obj file
 	std::shared_ptr<Oz::cTexture> worldTexture = m_Program->getResource()->Load<Oz::cTexture>("../src/Resources/Textures/re_hall_diffuse.png"); //Load the texture
 
-	std::shared_ptr<Oz::cMesh> mesh = m_Program->getResource()->Load<Oz::cMesh>("../src/Resources/Models/sharprockfree.obj"); //Load obj file
-	//std::shared_ptr<Oz::cTexture> texture = Program->getResource()->Load<Oz::cTexture>("../src/Resources/Textures/Whiskers_diffuse.png"); //Load the texture
+	std::shared_ptr<Oz::cMesh> mesh = m_Program->getResource()->Load<Oz::cMesh>("../src/Resources/Models/curuthers.obj"); //Load obj file
+	std::shared_ptr<Oz::cTexture> texture = m_Program->getResource()->Load<Oz::cTexture>("../src/Resources/Textures/Whiskers_diffuse.png"); //Load the texture
 	std::shared_ptr<Oz::cMaterial> material = m_Program->getResource()->Load<Oz::cMaterial>("../src/Resources/Materials/Test.m4t"); //Load a material
 
 	wmr->setMesh(worldMesh);
 	wmr->setTexture(worldTexture);
 
 	mr->setMesh(mesh);
-	mr->setMaterial(material);
-	//mr->setTexture(texture);
-
-	//hehe->setMesh(mesh);
-	//hehe->setTexture(texture);
-
-	//std::shared_ptr<Oz::cMaterial> material = Program->getResource()->Load<Oz::cMaterial>("../src/Resources/Materials/Test.m4t"); //Load the shader
-	//std::shared_ptr<Oz::cRenderTexture> rt = Program->getResource()->Load<Oz::cRenderTexture>();
-
 	//mr->setMaterial(material);
+	mr->setTexture(texture);
 }
 
 void cProgram::Run()

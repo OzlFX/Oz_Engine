@@ -1,6 +1,5 @@
-#include "Components/ComponentIncludes.h"
 #include "Light.h"
-#include "Core.h"
+#include "Components/ComponentIncludes.h"
 
 #include "RenderSystem/ShaderProgram.h"
 
@@ -17,14 +16,6 @@ namespace Oz
 	{
 		m_Colour = _colour;
 		m_Intensity = _intensity;
-	}
-
-	void cLight::onBegin()
-	{
-		//m_LightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, m_NearPlane, m_FarPlane);
-		//m_LightView = glm::lookAt(getGameObject()->getTransform()->getPos(),
-		//	glm::vec3(0.0f), glm::vec3(0.0, 1.0, 0.0));
-		//m_LightSpaceMatrix = m_LightProjection * m_LightView;
 	}
 
 	//std::shared_ptr<cShadowInfo> cLight::getShadowInfo()

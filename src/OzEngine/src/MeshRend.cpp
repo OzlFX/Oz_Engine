@@ -1,19 +1,15 @@
+#include "OzEngine/src/MeshRend.h"
 #include "Components/ComponentIncludes.h"
+#include "OzEngine/src/Camera.h"
 #include "Light.h"
 #include "Mesh.h"
 #include "Texture.h"
 #include "RenderTexture.h"
 #include "Material.h"
-#include "Core.h"
 #include "RenderSystem/ShaderProgram.h"
 
 namespace Oz
 {
-	void cMeshRenderer::onInit()
-	{
-		m_Lights = getCore()->getLights(); //Get the lights to render from
-	}
-
 	void cMeshRenderer::onBegin()
 	{
 		if (m_Material == NULL)
@@ -34,6 +30,7 @@ namespace Oz
 			//Check if the material is set
 			if (m_Material != NULL)
 			{
+				m_Lights = getCore()->getLights(); //Get the lights to render from
 
 				for (std::list<std::shared_ptr<cGameObject>>::iterator it = m_Lights.begin(); it != m_Lights.end(); it++)
 				{
@@ -50,14 +47,9 @@ namespace Oz
 				m_Shader->setUniform("in_ao", m_Material->getDisperse());
 
 				m_Shader->Draw(m_Mesh);
-
-				//m_NullShader->setViewport(glm::vec4(0, 0, getCore()->getWinSize().x, getCore()->getWinSize().y));
-				//m_NullShader->setUniform("in_Texture", m_Material->getRendTexture());
-				//m_NullShader->Draw(m_Mesh);
 			}
 			else
 			{
-				//renderLights();
 
 				//m_Shader->setUniform("in_Projection", getCore()->getMainCamera()->getProjection());
 				m_Shader->setUniform("in_View", getCore()->getMainCamera()->getView());
@@ -65,21 +57,12 @@ namespace Oz
 				m_Shader->setUniform("in_Texture", m_Texture);
 
 				m_Shader->Draw(m_Mesh);
-
-				//m_NullShader->setViewport(glm::vec4(0, 0, getCore()->getWinSize().x, getCore()->getWinSize().y));
-				//m_NullShader->setUniform("in_Texture", m_Default);
-				//m_NullShader->Draw(m_Mesh.lock());
 			}
 		}
 		else
 		{
 			throw Oz::Exception("No Camera given, cannot render!");
 		}
-	}
-
-	void cMeshRenderer::postProcessing()
-	{
-
 	}
 
 	void cMeshRenderer::setMesh(std::weak_ptr<cMesh> _mesh)

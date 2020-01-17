@@ -10,6 +10,7 @@ namespace Oz
 	class cCore;
 	class cResources;
 	
+	/* Base component that holds basic data and functions that different component types will need */
 	class cComponent
 	{
 		friend class cGameObject;

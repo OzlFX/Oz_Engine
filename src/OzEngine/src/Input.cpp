@@ -2,135 +2,139 @@
 
 namespace Oz
 {
-	void cInputHandler::Update()
+	void cInputHandler::Update(SDL_Event* _event)
 	{
 		m_PressedKeys.clear();
 		m_ReleasedKeys.clear();
+		m_Keys.clear();
+
+		m_Event = _event;
 
 		if (m_BindMouse)
 		{
 			SDL_ShowCursor(SDL_DISABLE);
 			SDL_SetRelativeMouseMode(SDL_TRUE);
 		}
-
-		while (SDL_PollEvent(&m_Event))
+		else
 		{
-			if (m_Event.type == SDL_QUIT)
+			SDL_ShowCursor(SDL_ENABLE);
+			SDL_SetRelativeMouseMode(SDL_FALSE);
+		}
+
+		while (SDL_PollEvent(_event))
+		{
+			switch (_event->type)
 			{
+			case SDL_QUIT:
 				m_QuitCommand = true;
+				break;
+			case SDL_KEYDOWN:
+				m_PressedKeys.push_back(_event->key.keysym.sym);
+				if (std::find(m_Keys.begin(), m_Keys.end(), _event->key.keysym.sym) != m_Keys.end()) {
+					//Do nothing
+					/* I would put something here but since its being ignored, just imagine Im singing :) */
+				}
+				else
+					m_Keys.push_back(_event->key.keysym.sym);
+				break;
+			case SDL_KEYUP:
+				m_ReleasedKeys.push_back(_event->key.keysym.sym);
+				for (int i = 0; i < m_Keys.size(); i++)
+				{
+					if (m_Keys.at(i) == _event->key.keysym.sym)
+						m_Keys.erase(m_Keys.begin() + i);
+				}
+				break;
+			case SDL_MOUSEBUTTONDOWN:
+				m_PressedKeys.push_back(_event->key.keysym.sym);
+				if (std::find(m_Keys.begin(), m_Keys.end(), _event->key.keysym.sym) != m_Keys.end()) {
+					//Do nothing
+					/* I would put something here but since its being ignored, just imagine Im singing :) */
+				}
+				else
+					m_Keys.push_back(_event->key.keysym.sym);
+				break;
+			case SDL_MOUSEBUTTONUP:
+				m_ReleasedKeys.push_back(_event->key.keysym.sym);
+				for (int i = 0; i < m_Keys.size(); i++)
+				{
+					if (m_Keys.at(i) == _event->key.keysym.sym)
+						m_Keys.erase(m_Keys.begin() + i);
+				}
+				break;
 			}
 
-			//for (std::list<int>::iterator it = m_Keys.begin(); it != m_Keys.end(); it++)
-			//{
-			//	m_State[*it];
-			//}
+			if (_event->key.keysym.sym == SDLK_ESCAPE)
+			{
+				m_BindMouse = false;
+			}
+
 		}
 	}
 
 	bool cInputHandler::getKey(int _key)
 	{
-		if (m_State[_key])
+		for (int i = 0; i < m_PressedKeys.size(); ++i)
 		{
-			m_Keys.push_back(_key);
-			m_PressedKeys.push_back(_key);
-
-			return true;
+			if (m_Keys.at(i) == _key)
+			{
+				return true;
+			}
 		}
-		else
-		{
-			m_Keys.remove(_key);
-			m_ReleasedKeys.push_back(_key);
-			return false;
-		}
+		return false;
 	}
 
 	bool cInputHandler::getKeyPressed(int _key)
 	{
-		if (m_Event.type == SDL_KEYDOWN)
+		for (int i = 0; i < m_PressedKeys.size(); ++i)
 		{
-			if (m_Event.key.keysym.sym == _key)
+			if (m_PressedKeys.at(i) == _key)
 			{
-				m_PressedKeys.push_back(_key);
-
 				return true;
 			}
-			else
-			{
-				return false;
-			}
 		}
-		else
-		{
-			return false;
-		}
+		return false;
 	}
 
 	bool cInputHandler::getKeyReleased(int _key)
 	{
-		if (m_Event.type == SDL_KEYUP)
+		for (int i = 0; i < m_ReleasedKeys.size(); ++i)
 		{
-			if (m_Event.key.keysym.sym == _key)
+			if (m_ReleasedKeys.at(i) == _key)
 			{
-				m_ReleasedKeys.push_back(_key);
-
 				return true;
 			}
-			else
-			{
-				return false;
-			}
 		}
-		else
-		{
-			return false;
-		}
+		return false;
 	}
 
 	bool cInputHandler::getMouseButtonPressed(int _button)
 	{
-		if (m_Event.type == SDL_MOUSEBUTTONDOWN)
+		for (int i = 0; i < m_PressedKeys.size(); ++i)
 		{
-			if (m_Event.button.button == _button)
+			if (m_PressedKeys.at(i) == _button)
 			{
-				m_ReleasedKeys.push_back(_button);
-
 				return true;
 			}
-			else
-			{
-				return false;
-			}
 		}
-		else
-		{
-			return false;
-		}
+		return false;
 	}
 
 	bool cInputHandler::getMouseButtonReleased(int _button)
 	{
-		if (m_Event.type == SDL_MOUSEBUTTONUP)
+		for (int i = 0; i < m_ReleasedKeys.size(); ++i)
 		{
-			if (m_Event.button.button == _button)
+			if (m_ReleasedKeys.at(i) == _button)
 			{
-				m_ReleasedKeys.push_back(_button);
-
 				return true;
 			}
-			else
-			{
-				return false;
-			}
 		}
-		else
-		{
-			return false;
-		}
+		return false;
 	}
 
 	bool cInputHandler::getMouseMovement()
 	{
-		if (m_Event.type == SDL_MOUSEMOTION)
+		if (m_Event->type == SDL_MOUSEMOTION)
 		{
 			return true;
 		}
@@ -140,7 +144,7 @@ namespace Oz
 
 	glm::vec2 cInputHandler::getMousePos()
 	{
-		return glm::vec2(m_Event.motion.x, m_Event.motion.y);
+		return glm::vec2(m_Event->motion.xrel, m_Event->motion.yrel);
 	}
 
 	void cInputHandler::clearHeld()

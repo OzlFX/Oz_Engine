@@ -3,6 +3,7 @@
 
 namespace Oz
 {
+	/* Prevents multiple instances of said class being opened more than once without clearing the old first */
 	class cNonCopyable
 	{
 		protected:

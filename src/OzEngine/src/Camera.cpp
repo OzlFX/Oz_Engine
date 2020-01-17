@@ -1,7 +1,8 @@
+#include "Camera.h"
 #include "Components/ComponentIncludes.h"
 #include "Resources.h"
-#include "Core.h"
 #include "RenderSystem/ShaderProgram.h"
+#include "Input.h"
 
 namespace Oz
 {
@@ -12,6 +13,15 @@ namespace Oz
 		m_Shaders = getCore()->getShaders();
 		m_Pos = getGameObject()->getTransform()->getPos();
 		m_Rotation = getGameObject()->getTransform()->getRotation();
+		//m_CameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
+		m_CameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
+
+		m_FirstMouse = true;
+		m_Yaw = -90.0f;
+		m_Pitch = 0.0f;
+		m_LastX = 800.0f / 2.0;
+		m_LastY = 600.0 / 2.0;
+		m_Fov = 45.0f;
 	}
 
 	void cCamera::onBegin()
@@ -49,6 +59,39 @@ namespace Oz
 	std::shared_ptr<cTransform> cCamera::getTransform()
 	{
 		return getGameObject()->getComponent<cTransform>();
+	}
+
+	void cCamera::Rotate()
+	{
+		if (m_FirstMouse)
+		{
+			m_LastX = getCore()->getInputHandler()->getMousePos().x;
+			m_LastY = getCore()->getInputHandler()->getMousePos().y;
+			m_FirstMouse = false;
+		}
+
+		float xoffset = getCore()->getInputHandler()->getMousePos().x - m_LastX;
+		float yoffset = m_LastY - getCore()->getInputHandler()->getMousePos().y;
+		m_LastX = getCore()->getInputHandler()->getMousePos().x;
+		m_LastY = getCore()->getInputHandler()->getMousePos().y;
+
+		float sensitivity = 0.05;
+		xoffset *= sensitivity;
+		yoffset *= sensitivity;
+
+		m_Yaw += xoffset;
+		m_Pitch += yoffset;
+
+		if (m_Pitch > 89.0f)
+			m_Pitch = 89.0f;
+		if (m_Pitch < -89.0f)
+			m_Pitch = -89.0f;
+
+		glm::vec3 direction;
+		direction.x = cos(glm::radians(m_Yaw)) * cos(glm::radians(m_Pitch));
+		direction.y = sin(glm::radians(m_Pitch));
+		direction.z = sin(glm::radians(m_Yaw)) * cos(glm::radians(m_Pitch));
+		getGameObject()->getTransform()->setForward(glm::normalize(direction));
 	}
 
 	//Get the camera view

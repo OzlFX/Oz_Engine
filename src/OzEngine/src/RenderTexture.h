@@ -5,6 +5,7 @@
 
 namespace Oz
 {
+	/* Used to draw post processing to the screen */
 	class cRenderTexture : public cTexture
 	{
 		friend class cResources;

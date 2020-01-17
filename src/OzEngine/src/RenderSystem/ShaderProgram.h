@@ -25,6 +25,7 @@ namespace Oz
 		std::shared_ptr<cTexture> m_Texture;
 	};
 
+	/* Sends data to the GPU to be rendered */
 	class cShaderProgram : private cNonCopyable
 	{
 		friend class cCore;

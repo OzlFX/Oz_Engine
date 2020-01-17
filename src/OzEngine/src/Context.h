@@ -15,6 +15,7 @@ namespace Oz
 	class cMaterial;
 	class cRenderTexture;
 
+	/* Handles the OpenAl and OpenGl initialisation sequence */
 	class cContext
 	{
 	private:

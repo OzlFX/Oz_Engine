@@ -2,7 +2,6 @@
 #define _CINPUT_H_
 
 #include <vector>
-#include <list>
 #include <SDL2/SDL.h>
 #include <glm/glm.hpp>
 
@@ -19,16 +18,15 @@ namespace Oz
 		bool m_QuitCommand;
 		bool m_BindMouse;
 
-		std::list<int> m_Keys;
+		SDL_Event* m_Event = { 0 };
+
+		std::vector<int> m_Keys;
 		std::vector<int> m_PressedKeys;
 		std::vector<int> m_ReleasedKeys;
 
-		SDL_Event m_Event = { 0 }; //Event variable to handle key checks
-		const Uint8 *m_State = SDL_GetKeyboardState(NULL);
-
 	public:
 
-		void Update();
+		void Update(SDL_Event* _event); //Update the Inputs
 
 		bool getKey(int _key); //Check if a key is held down
 		bool getKeyPressed(int _key); //Check if a key was pressed
@@ -42,11 +40,12 @@ namespace Oz
 
 		glm::vec2 getMousePos(); //Get the current mouse position
 
+		//Clear key vectors and list
 		void clearHeld();
 		void clearPressed();
 		void clearReleased();
 
-		bool quitCommand();
+		bool quitCommand(); //Issue a quit command for the program
 
 		~cInputHandler();
 	};

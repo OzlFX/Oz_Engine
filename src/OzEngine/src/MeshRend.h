@@ -4,6 +4,7 @@
 #include "Components.h"
 
 #include <SDL2/SDL.h>
+#include <list>
 
 namespace Oz
 {
@@ -27,19 +28,14 @@ namespace Oz
 		//std::shared_ptr<cRenderTexture> m_Default; //Default render texture
 
 		std::shared_ptr<cShaderProgram> m_Shader; //Model shader
-		std::shared_ptr<cShaderProgram> m_LightShader; //Light Shader
-		std::shared_ptr<cShaderProgram> m_DepthShader; //Light Shader
-		std::shared_ptr<cShaderProgram> m_DepthQuad; //Light Shader
-		//std::shared_ptr<cShaderProgram> m_NullShader; //Null shader
 		
 		//Functions
 		void onDisplay(); //Render the object's with texture/material
-		void postProcessing(); //Render post processing effects for the object
+		//void postProcessing(); //Render post processing effects for the object
 
 	public:
 
-		void onBegin();
-		void onInit();
+		void onBegin(); //When the program begins obtain all necessary data to render to the screen
 
 		void setMesh(std::weak_ptr<cMesh> _mesh); //Set the mesh
 		void setTexture(std::weak_ptr<cTexture> _texture); //Set the texture, use this if no material is provided

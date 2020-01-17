@@ -6,18 +6,17 @@
 
 namespace Oz
 {
+	/* Custom engine exception for specific engine usages */
+	struct Exception : public std::exception
+	{
+		Exception(const std::string& _message);
+		virtual ~Exception() throw();
+		virtual const char* what() const throw();
 
-struct Exception : public std::exception
-{
-  Exception(const std::string& _message);
-  virtual ~Exception() throw();
-  virtual const char* what() const throw();
+	private:
+		std::string m_Message;
 
-private:
-  std::string m_Message;
-
-};
-
+	};
 }
 
 #endif

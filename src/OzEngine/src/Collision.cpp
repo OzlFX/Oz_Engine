@@ -1,20 +1,19 @@
-#include "Components/ComponentIncludes.h"
 #include "Collision.h"
-#include "Core.h"
+#include "Components/ComponentIncludes.h"
 
-#include <vector>
+#include <list>
 
 namespace Oz
 {
 	/* BoxCollider Functions */
 	void cBoxCollider::collideBox()
 	{
-		std::vector<std::shared_ptr<cGameObject>> bces;
+		std::list<std::shared_ptr<cGameObject>> bces;
 
-		getCore()->getGameObjects<cBoxCollider>(bces);
+		bces = getCore()->getGameObjects();
 		glm::vec3 np = getGameObject()->getTransform()->getPos() + m_Offset;
 
-		for (std::vector<std::shared_ptr<cGameObject>>::iterator it = bces.begin();
+		for (std::list<std::shared_ptr<cGameObject>>::iterator it = bces.begin();
 			it != bces.end(); it++)
 		{
 			if (*it == getGameObject())
@@ -122,6 +121,7 @@ namespace Oz
 
 	void cBoxCollider::onInit(glm::vec3 _size, glm::vec3 _offset)
 	{
+		m_LastPosition = getGameObject()->getTransform()->getPos();
 		m_Size = _size; //Set the box collider's size
 		m_Offset = _offset; //Set the box collider's offset
 	}

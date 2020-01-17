@@ -30,6 +30,8 @@ namespace Oz
 		bool m_Running = false;
 		SDL_Window* m_Window;
 
+		SDL_Event m_Event = { 0 }; //Event variable to handle key checks
+
 		std::weak_ptr<cCore> m_Self;
 
 		std::shared_ptr<cContext> m_Context; //Context
@@ -45,7 +47,7 @@ namespace Oz
 		std::list<std::shared_ptr<cShaderProgram>> m_Shaders; //List of shaders
 		std::list<std::shared_ptr<cShaderProgram>> m_PostShaders; //List of post processing shaders
 
-		std::list<std::shared_ptr<cGameObject>> m_Lights;
+		std::list<std::shared_ptr<cGameObject>> m_Lights; //list of light gameobjects
 
 		int m_WinWidth, m_WinHeight; //Width and height of the window
 
@@ -74,29 +76,12 @@ namespace Oz
 		//Add light by using a position, rotation, scale and light type; rest is taken care of ;)
 		std::shared_ptr<cGameObject> addLight(glm::vec3 _pos, glm::vec3 _rotation, glm::vec3 _scale, glm::vec3 _colour, float _intensity);
 		
-		template <typename T>
-		void getGameObjects(std::vector<std::shared_ptr<cGameObject>> &_gameObjects)
-		{
-			std::shared_ptr<T> component;
-			for (std::list<std::shared_ptr<cGameObject>>::iterator it = m_GameObjects.begin(); it != m_GameObjects.end(); ++it)
-			{
-				std::list<std::shared_ptr<cComponent>> components = (*it)->getComponents();
-				for (std::list<std::shared_ptr<cComponent>>::iterator jit = components.begin(); jit != components.end(); ++jit)
-				{
-					component = std::dynamic_pointer_cast<T>(*jit);
-					if (component)
-					{
-						_gameObjects.push_back(*it);
-						component = NULL;
-					}
-				}
-			}
-		}
+		std::list<std::shared_ptr<cGameObject>> getGameObjects(); //Get the gameobjects list
 
-		std::list<std::shared_ptr<cGameObject>> getLights();
+		std::list<std::shared_ptr<cGameObject>> getLights(); //Get the lights list
 
-		std::shared_ptr<cShaderProgram> getShader();
-		std::list<std::shared_ptr<cShaderProgram>> getShaders() const;
+		std::shared_ptr<cShaderProgram> getShader(); //Get the default shader
+		std::list<std::shared_ptr<cShaderProgram>> getShaders() const; //Get the shader list
  
 		void removeShader(std::shared_ptr<cShaderProgram> _shader); //Remove the desired shader
 

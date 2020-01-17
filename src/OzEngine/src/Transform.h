@@ -1,5 +1,5 @@
-#ifndef _TRANSFORM_H_
-#define _TRANSFORM_H_
+#ifndef _CTRANSFORM_H_
+#define _CTRANSFORM_H_
 
 //Includes
 #include "Components.h"
@@ -23,10 +23,10 @@ namespace Oz
 		glm::vec3 m_Forward;
 		glm::vec3 m_Right;
 
-		std::list<std::shared_ptr<cGameObject>> m_Children;
-
-		std::shared_ptr<cGameObject> m_Parent;
-		std::shared_ptr<cGameObject> m_Child;
+		//std::list<std::shared_ptr<cGameObject>> m_Children;
+		//
+		//std::shared_ptr<cGameObject> m_Parent;
+		//std::shared_ptr<cGameObject> m_Child;
 
 	public:
 
@@ -34,6 +34,7 @@ namespace Oz
 		void setPos(glm::vec3 _pos); //Set the position of the object
 		void setScale(glm::vec3 _scale); //Set the scale of the object
 		void setRotation(glm::vec3 _rotation); //Set the rotation of the object
+		void setForward(glm::vec3 _forward); //Set the forward of the object
 
 		void onInit(glm::vec3 _pos, glm::vec3 _rotation, glm::vec3 _scale); //Initialise the object's postion, rotation and scale
 

@@ -1,7 +1,7 @@
 #include "Components/ComponentIncludes.h"
 #include "SoundSystem.h"
 #include "Sound.h"
-#include "Core.h"
+#include "Camera.h"
 
 namespace Oz
 {
